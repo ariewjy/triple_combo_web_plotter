@@ -5,7 +5,6 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from welly import well
 sns.set(style='ticks')
 
 
