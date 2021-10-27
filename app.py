@@ -1,5 +1,4 @@
 ### ---installing dependencies---
-from typing import Union
 import lasio
 import pandas as pd
 import streamlit as st
