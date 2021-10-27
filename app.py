@@ -27,10 +27,9 @@ with header:
 
 with dataset:
   st.subheader('Importing LAS file')
-  
-  
-  uploaded_file = st.file_uploader('Please upload your LAS file')
-
+    
+  uploaded_file = st.file_uploader('Please upload your LAS file first, otherwise It will show as an ERROR')
+    
   uploaded_file.seek(0)
   string = uploaded_file.read().decode()
   las_file = lasio.read(string)
@@ -39,6 +38,7 @@ with dataset:
   well_data['DEPTH']=well_data.index
   st.text('LAS file imported and displayed as dataframe. The first column (index) is the Depth') 
   st.write(well_data)
+  
 
 with data_prep:
   st.subheader('Selecting the Curves')
