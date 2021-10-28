@@ -35,7 +35,8 @@ with dataset:
   las_file = lasio.read(string)
 
   well_data = las_file.df()
-  well_data['DEPTH']=well_data.index
+#   well_data['DEPTH']=well_data.index
+  well_data.insert(0, 'DEPTH', well_data.index)
   st.text('LAS file imported and displayed as dataframe. The first column (index) is the Depth') 
   st.write(well_data)
   
@@ -131,8 +132,7 @@ with data_plotting:
   ax3 = plt.subplot2grid((1,3), (0,2), rowspan=1, colspan = 1)
   ax4 = ax3.twiny() #Twins the y-axis for the density track with the neutron track
 
-  # As our curve scales will be detached from the top of the track,
-  # this code adds the top border back in without dealing with splines
+  #adding top border
   ax7 = ax1.twiny()
   ax7.xaxis.set_visible(False)
   ax8 = ax2.twiny()
