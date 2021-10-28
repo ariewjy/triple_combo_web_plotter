@@ -20,7 +20,7 @@ data_plotting = st.container()
 
 with header:
   st.title('Welcome to the Triple Combo Plotter!')
-  st.text('This is a web app to plot your LAS file data into a triple combo plot.\n(c) 2021, Aditya Arie Wijaya')
+  st.text('This is a web app to plot your LAS 2.0 file data into a triple combo plot.\n(c) 2021, Aditya Arie Wijaya')
   st.text('LinkedIn profile: www.linkedin.com/in/adityaariewijaya89')
 
 ###---Importing Data---
@@ -28,7 +28,7 @@ with header:
 with dataset:
   st.subheader('Importing LAS file')
     
-  uploaded_file = st.file_uploader('IMPORTANT!!!: Please UPLOAD your LAS file first, otherwise It will show as an ERROR')
+  uploaded_file = st.file_uploader('IMPORTANT!!!: Please UPLOAD your LAS 2.0 file first, otherwise It will show as an ERROR')
     
   uploaded_file.seek(0)
   string = uploaded_file.read().decode()
