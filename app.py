@@ -37,6 +37,7 @@ with dataset:
   well_data = las_file.df()
 #   well_data['DEPTH']=well_data.index
   well_data.insert(0, 'DEPTH', well_data.index)
+  well_data.reset_index(inplace=True)
   st.text('LAS file imported and displayed as dataframe. The first column (index) is the Depth') 
   st.write(well_data)
   
