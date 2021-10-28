@@ -20,7 +20,7 @@ data_plotting = st.container()
 
 with header:
   st.title('Welcome to the Triple Combo Plotter!')
-  st.text('This is a web app to plot your LAS 2.0 file data into a triple combo plot.\n(c) 2021, Aditya Arie Wijaya')
+  st.text('This is a web app to plot your LAS 2.0 file data into a triple combo plot.\n(c) 2021, Aditya Arie Wijaya\n========================')
   st.text('LinkedIn profile: www.linkedin.com/in/adityaariewijaya89')
 
 ###---Importing Data---
