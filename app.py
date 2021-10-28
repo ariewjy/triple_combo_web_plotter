@@ -119,7 +119,7 @@ with data_plotting:
   st.text('Right Click and Save as Image to Download the File')
 
   fig, ax = plt.subplots(figsize=(plot_w,plot_h))
-  fig.suptitle(f"Well: {well_name}\n( Interval: {top_depth} - {bot_depth})\n ---(c) Aditya Arie Wijaya,2021---\n===================",
+  fig.suptitle(f"Well: {well_name}\n( Interval: {top_depth} - {bot_depth})\n===================\n ---(c) Aditya Arie Wijaya,2021---\n===================",
               size=title_size, y=title_height)
 
   gr_log=well_data[curve_list[0]]
