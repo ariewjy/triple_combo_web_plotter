@@ -20,7 +20,7 @@ data_plotting = st.container()
 
 with header:
   st.title('Welcome to the Triple Combo Plotter!')
-  st.text('This is a web app to plot your LAS 2.0 file data into a triple combo plot.\n(c) 2021, Aditya Arie Wijaya\n===========================')
+  st.text('This is a web app to plot your LAS 2.0 file data into a triple combo plot.\n(c) 2021, Aditya Arie Wijaya\n=============================')
   st.text('LinkedIn profile: www.linkedin.com/in/adityaariewijaya89')
 
 ###---Importing Data---
@@ -119,7 +119,7 @@ with data_plotting:
   st.text('Right Click and Save as Image to Download the File')
 
   fig, ax = plt.subplots(figsize=(plot_w,plot_h))
-  fig.suptitle(f"Well: {well_name}\n( Interval: {top_depth} - {bot_depth})\n ---(c) Aditya Arie Wijaya,2021---\n==================== ",
+  fig.suptitle(f"Well: {well_name}\n( Interval: {top_depth} - {bot_depth})\n ---(c) Aditya Arie Wijaya,2021---\n===================",
               size=title_size, y=title_height)
 
   gr_log=well_data[curve_list[0]]
