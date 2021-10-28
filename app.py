@@ -76,7 +76,7 @@ with data_setting:
   gr_left = st.sidebar.slider('Gamma Ray Left Scale', min_value=0, value=0, step=10)
   gr_right = st.sidebar.slider('Gamma Ray Right Scale', min_value=0, value=200, max_value=300, step=10)
   gr_cutoff = st.sidebar.slider('Gamma Ray Cutoff', min_value=0, value=60)
-  gr_base = st.sidebar.slider('Gamma Ray Base', min_value=0, value=0, step=10)
+  gr_base = st.sidebar.slider('Gamma Ray Base', min_value=0, value=0)
   gr_shale = st.sidebar.radio('Shale Colour',['lime','gray'])
   gr_sand = st.sidebar.radio('Sand Colour',['gold','yellow'])
   if gr_right == 150:
