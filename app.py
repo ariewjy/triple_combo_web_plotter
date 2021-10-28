@@ -28,7 +28,7 @@ with header:
 with dataset:
   st.subheader('Importing LAS file')
     
-  uploaded_file = st.file_uploader('Please upload your LAS file first, otherwise It will show as an ERROR')
+  uploaded_file = st.file_uploader('IMPORTANT!!!: Please UPLOAD your LAS file first, otherwise It will show as an ERROR')
     
   uploaded_file.seek(0)
   string = uploaded_file.read().decode()
