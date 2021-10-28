@@ -95,8 +95,8 @@ with data_setting:
   st.sidebar.title('Density Logs')
   den_color = 'red'
   den_trackname = 'Density'
-  den_left = st.sidebar.number_input('Density Left Scale', min_value=0.00, value=1.95)
-  den_right = st.sidebar.number_input('Density Right Scale', max_value=3.00, value=2.95)
+  den_left = st.sidebar.number_input('Density Left Scale', min_value=0.00, value=1.95, step=0.05)
+  den_right = st.sidebar.number_input('Density Right Scale', max_value=3.00, value=2.95, step=0.05)
 
   st.sidebar.title('Neutron Logs')
   neu_color = 'blue'
