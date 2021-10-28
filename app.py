@@ -101,8 +101,8 @@ with data_setting:
   st.sidebar.title('Neutron Logs')
   neu_color = 'blue'
   neu_trackname = 'Neutron'
-  neu_left = st.sidebar.number_input('Neutron Left Scale', min_value=0.00, value=0.45)
-  neu_right = st.sidebar.number_input('Neutron Right Scale', min_value=-0.5, value=-0.15)
+  neu_left = st.sidebar.number_input('Neutron Left Scale', min_value=-50.00, value=0.45)
+  neu_right = st.sidebar.number_input('Neutron Right Scale', min_value=-50.00, value=-0.15)
 
   den_neu_div = 5
   dn_xover = st.sidebar.radio('D-N Colour',['yellow','gold'])
