@@ -38,11 +38,13 @@ if file:
   start_depth =  las_file.header['Well'].STRT.value
   stop_depth =  las_file.header['Well'].STOP.value
   company_name =  las_file.header['Well'].COMP.value
+  date =  las_file.header['Well'].DATE.value
 
   st.text(f'Well Name : {well_name}')
   st.text(f'Start Depth : {start_depth}')
   st.text(f'Stop Depth : {stop_depth}')
   st.text(f'Company : {company_name}')
+  st.text(f'Logging Date : {date}')
 
   st.write(las_df)
   st.markdown('LAS file data is displayed as a table above')
