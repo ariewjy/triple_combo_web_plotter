@@ -29,7 +29,8 @@ with dataset:
   st.subheader('Importing LAS file')
     
   uploaded_file = st.file_uploader('IMPORTANT!!!: Please UPLOAD your LAS 2.0 file first, otherwise It will show as an ERROR')
-    
+  if uploaded_file is None:
+        return None
   uploaded_file.seek(0)
   string = uploaded_file.read().decode()
   las_file = lasio.read(string)
