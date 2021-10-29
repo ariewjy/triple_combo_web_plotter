@@ -59,10 +59,10 @@ if file:
   # den_col = las_df.columns.get_loc('RHOB')
   # neu_col = las_df.columns.get_loc('NPHI')
 
-  gr_curve = st.selectbox('select the gamma ray curve', curves)
-  res_curve = st.selectbox('select the resistivity curve', curves)
-  den_curve = st.selectbox('select the density curve', curves)
-  neu_curve = st.selectbox('select the neutron curve', curves)
+  gr_curve = st.selectbox('Gamma Ray Curve', curves)
+  res_curve = st.selectbox('Resistivity Curve', curves)
+  den_curve = st.selectbox('Bulk Density Curve', curves)
+  neu_curve = st.selectbox('Neutron Porosity', curves)
 
   curve_list = [gr_curve, res_curve, den_curve, neu_curve]
 
