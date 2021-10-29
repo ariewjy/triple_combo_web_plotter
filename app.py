@@ -29,17 +29,14 @@ with dataset:
   st.subheader('Importing LAS file')
     
   uploaded_file = st.file_uploader('IMPORTANT!!!: Please UPLOAD your LAS 2.0 file first, otherwise It will show as an ERROR')
-  if uploaded_file is None:
-        return None
+  
   uploaded_file.seek(0)
   string = uploaded_file.read().decode()
   las_file = lasio.read(string)
 
   well_data = las_file.df()
-#   well_data['DEPTH']=well_data.index
   well_data.insert(0, 'DEPTH', well_data.index)
   well_data.reset_index(drop=True, inplace=True) 
-#   well_data.reset_index(inplace=True)
   st.text('This is your data displayed in table format. You can scroll left-right/ up-down to see the entire data') 
   st.write(well_data)
   
