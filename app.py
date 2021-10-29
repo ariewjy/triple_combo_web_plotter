@@ -1,74 +1,85 @@
-### ---installing dependencies---
 import lasio
-import pandas as pd
+from numpy.core.fromnumeric import mean
 import streamlit as st
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(style='ticks')
 
 
-###---setting up the display---
+st.set_option('deprecation.showfileUploaderEncoding', False)
 
-header = st.container()
-dataset = st.container()
-data_prep = st.container()
-data_setting=st.container()
-data_plotting = st.container()
+st.title('Welcome to Triple Combo Web-App Plotter')
+st.text('This is a web app to plot your LAS 2.0 file data into a triple combo plot.\n(c) 2021, Aditya Arie Wijaya\n=============================')
+st.text('Suggestions --> LinkedIn: www.linkedin.com/in/adityaariewijaya89')
 
-###---Welcome Message---
+st.title('LAS File Data')
 
-with header:
-  st.title('Welcome to the Triple Combo Plotter!')
-  st.text('This is a web app to plot your LAS 2.0 file data into a triple combo plot.\n(c) 2021, Aditya Arie Wijaya\n=============================')
-  st.text('Suggestions please forward to my LinkedIn profile: www.linkedin.com/in/adityaariewijaya89')
+mode = st.radio(
+    "Select an option:",
+    ('Upload File', 'Use Preloaded File')
+)
 
-###---Importing Data---
-
-with dataset:
-  st.subheader('Importing LAS file')
+if mode == 'Upload File':
+    file = st.file_uploader('Upload the LAS file')
     
-  uploaded_file = st.file_uploader('IMPORTANT!!!: Please UPLOAD your LAS 2.0 file first, otherwise It will show as an ERROR')
-  
-  uploaded_file.seek(0)
-  string = uploaded_file.read().decode()
-  las_file = lasio.read(string)
+if mode == 'Use Preloaded File':
+    file = '42303347740000.las'
 
-  well_data = las_file.df()
-  well_data.insert(0, 'DEPTH', well_data.index)
-  well_data.reset_index(drop=True, inplace=True) 
-  st.text('This is your data displayed in table format. You can scroll left-right/ up-down to see the entire data') 
-  st.write(well_data)
-  
 
-with data_prep:
-  st.subheader('Selecting the Curves')
-  curves = well_data.columns.values
+if file:
+  las_file = lasio.read(file)
+  las_df=las_file.df()    
+  las_df.insert(0, 'DEPTH', las_df.index)
+  las_df.reset_index(drop=True, inplace=True) 
+
+  well_name =  las_file.header['Well'].WELL.value
+  start_depth =  las_file.header['Well'].STRT.value
+  stop_depth =  las_file.header['Well'].STOP.value
+  company_name =  las_file.header['Well'].COMP.value
+
+  st.text(f'Well Name : {well_name}')
+  st.text(f'Start Depth : {start_depth}')
+  st.text(f'Stop Depth : {stop_depth}')
+  st.text(f'Company : {company_name}')
+
+  st.write(las_df)
+  st.markdown('LAS file data is displayed as a table above')
+
+
+  # for item in las_file.well:
+  #   st.text(f"{item.descr} ({item.mnemonic}): {item.value}")
+
+  st.title('Selecting Curves')
+  curves = las_df.columns.values
+
+  # gr_col = las_df.columns.get_loc('GR')
+  # res_col = las_df.columns.get_loc('ILD')
+  # den_col = las_df.columns.get_loc('RHOB')
+  # neu_col = las_df.columns.get_loc('NPHI')
 
   gr_curve = st.selectbox('select the gamma ray curve', curves)
-
   res_curve = st.selectbox('select the resistivity curve', curves)
-
   den_curve = st.selectbox('select the density curve', curves)
   neu_curve = st.selectbox('select the neutron curve', curves)
 
-
   curve_list = [gr_curve, res_curve, den_curve, neu_curve]
 
-
-with data_setting:
+#==========================
+  
   st.sidebar.title('Plot Setting')
-  well_name = st.sidebar.text_input('Well Name',value ='Test')
-  well_df = well_data
+  well_name = st.sidebar.text_input('Well Name',value =(well_name))
+  well_df = las_df
   curve_names = curve_list
-  top_depth = st.sidebar.number_input('Top Depth', min_value=0.00, value=0.00, step=100.00)
-  bot_depth = st.sidebar.number_input('Bottom Depth', min_value=0.00, value=10000.00, step=100.00)
+  top_depth = st.sidebar.number_input('Top Depth', min_value=0.00, value=(start_depth), step=100.00)
+  bot_depth = st.sidebar.number_input('Bottom Depth', min_value=0.00, value=(stop_depth), step=100.00)
 
   plot_w = 12
   plot_h = 16
 
   title_size = 12
-  title_height = 1.05
+  title_height = 1.0
   line_width = 1
 
   st.sidebar.title('Gamma Ray Logs')
@@ -102,29 +113,30 @@ with data_setting:
   st.sidebar.title('Neutron Logs')
   neu_color = 'blue'
   neu_trackname = 'Neutron'
-  neu_left = st.sidebar.number_input('Neutron Left Scale', min_value=-50.00, value=0.45)
-  neu_right = st.sidebar.number_input('Neutron Right Scale', min_value=-50.00, value=-0.15)
+  neu_mean = np.nanmean(las_df[str(neu_curve)])
+  if neu_mean < 1 :
+    neu_left = st.sidebar.number_input('Neutron Left Scale', min_value=-50.00, value=0.45)
+    neu_right = st.sidebar.number_input('Neutron Right Scale', min_value=-50.00, value=-0.15)
+  if neu_mean > 1:
+    neu_left = st.sidebar.number_input('Neutron Left Scale', min_value=-50.00, value=45.00)
+    neu_right = st.sidebar.number_input('Neutron Right Scale', min_value=-50.00, value=-15.00)
 
   den_neu_div = 5
   dn_xover = st.sidebar.radio('D-N Colour',['yellow','gold'])
   dn_sep = st.sidebar.radio('N-D Colour',['lightgray','green'])
-
-  # plot_tight = st.sidebar.checkbox('Tight Layout')
-  # savepdf = st.checkbox('Save as PDF')
-
-
-with data_plotting:
-  st.subheader('Triple Combo Plot')
-  st.text('Right Click and Save as Image to Download the File')
+  
+#=================
+  st.title('Triple Combo Plot')
+  st.write('Right Click and Save as Image to Download the File')
 
   fig, ax = plt.subplots(figsize=(plot_w,plot_h))
-  fig.suptitle(f"===================\nWell: {well_name}\n( Interval: {top_depth} - {bot_depth})\n===================\n ---(c) Aditya Arie Wijaya,2021---\n===================",
+  fig.suptitle(f"===================\nWell: {well_name}\n(Interval: {top_depth} - {bot_depth})\n===================\n ---(c) Aditya Arie Wijaya,2021---\nhttps://github.com/ariewjy\n===================",
               size=title_size, y=title_height)
 
-  gr_log=well_data[curve_list[0]]
-  res_log=well_data[curve_list[1]]
-  den_log=well_data[curve_list[2]]
-  neu_log=well_data[curve_list[3]]
+  gr_log=las_df[curve_list[0]]
+  res_log=las_df[curve_list[1]]
+  den_log=las_df[curve_list[2]]
+  neu_log=las_df[curve_list[3]]
 
   #Set up the plot axes
   ax1 = plt.subplot2grid((1,3), (0,0), rowspan=1, colspan = 1)
@@ -232,8 +244,3 @@ with data_plotting:
   plt.show() 
   st.pyplot(fig)
 
-
-  
-
-    
-  
