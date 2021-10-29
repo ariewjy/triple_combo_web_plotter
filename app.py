@@ -21,7 +21,7 @@ data_plotting = st.container()
 with header:
   st.title('Welcome to the Triple Combo Plotter!')
   st.text('This is a web app to plot your LAS 2.0 file data into a triple combo plot.\n(c) 2021, Aditya Arie Wijaya\n=============================')
-  st.text('LinkedIn profile: www.linkedin.com/in/adityaariewijaya89')
+  st.text('Suggestions please forward to my LinkedIn profile: www.linkedin.com/in/adityaariewijaya89')
 
 ###---Importing Data---
 
@@ -37,8 +37,9 @@ with dataset:
   well_data = las_file.df()
 #   well_data['DEPTH']=well_data.index
   well_data.insert(0, 'DEPTH', well_data.index)
+  well_data.reset_index(drop=True, inplace=True) 
 #   well_data.reset_index(inplace=True)
-  st.text('LAS file imported and displayed as dataframe. The first column (index) is the Depth') 
+  st.text('This is your data displayed in table format. You can scroll left-right/ up-down to see the entire data') 
   st.write(well_data)
   
 
