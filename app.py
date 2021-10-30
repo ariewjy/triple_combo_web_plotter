@@ -34,6 +34,8 @@ if file:
   las_df.insert(0, 'DEPTH', las_df.index)
   las_df.reset_index(drop=True, inplace=True) 
 
+  
+
   well_name =  las_file.header['Well'].WELL.value
   start_depth =  las_file.header['Well'].STRT.value
   stop_depth =  las_file.header['Well'].STOP.value
@@ -41,19 +43,22 @@ if file:
   date =  las_file.header['Well'].DATE.value
   curvename = las_file.curves
 
+  st.subheader('Well Information')
   st.text(f'================================================\nWell Name : {well_name}')
   st.text(f'Start Depth : {start_depth}')
   st.text(f'Stop Depth : {stop_depth}')
   st.text(f'Company : {company_name}')
   st.text(f'Logging Date : {date}')
- 
+  
+  st.subheader('Curve Information')
   st.text(f'================================================\n{curvename}')
 
+  st.subheader('Curve Data')
+  st.markdown('LAS file curve data is displayed as a table below, similar to excel sheet.\nMove left-right and up-down, or expand to see more')
   st.write(las_df)
 
-  st.markdown('LAS file data is displayed as the above')
-
-
+  
+ 
   # for item in las_file.well:
   #   st.text(f"{item.descr} ({item.mnemonic}): {item.value}")
 
@@ -65,10 +70,10 @@ if file:
   # den_col = las_df.columns.get_loc('RHOB')
   # neu_col = las_df.columns.get_loc('NPHI')
 
-  gr_curve = st.selectbox('Gamma Ray Curve', curves)
-  res_curve = st.selectbox('Resistivity Curve', curves)
-  den_curve = st.selectbox('Bulk Density Curve', curves)
-  neu_curve = st.selectbox('Neutron Porosity', curves)
+  gr_curve = st.selectbox('select the gamma ray curve', curves)
+  res_curve = st.selectbox('select the resistivity curve', curves)
+  den_curve = st.selectbox('select the density curve', curves)
+  neu_curve = st.selectbox('select the neutron curve', curves)
 
   curve_list = [gr_curve, res_curve, den_curve, neu_curve]
 
@@ -90,13 +95,13 @@ if file:
 
   st.sidebar.title('Gamma Ray Logs')
   gr_color = 'green'
-  gr_trackname = 'Gamma Ray'
+  gr_trackname = f'Gamma Ray ({gr_curve})'
   gr_left = st.sidebar.slider('Gamma Ray Left Scale', min_value=0, value=0, step=10)
   gr_right = st.sidebar.slider('Gamma Ray Right Scale', min_value=0, value=200, max_value=300, step=10)
   gr_cutoff = st.sidebar.slider('Gamma Ray Cutoff', min_value=0, value=60)
   gr_base = st.sidebar.slider('Gamma Ray Base', min_value=0, value=0)
-  gr_shale = st.sidebar.radio('Shale Colour',['lime','gray'])
-  gr_sand = st.sidebar.radio('Sand Colour',['gold','yellow'])
+  gr_shale = st.sidebar.radio('Shale Colour',['lime','gray','none'])
+  gr_sand = st.sidebar.radio('Sand Colour',['gold','yellow', 'none'])
   if gr_right == 150:
     gr_div = 6
   else:
@@ -104,21 +109,21 @@ if file:
 
   st.sidebar.title('Resistivity Logs')
   res_color = 'purple'
-  res_trackname = 'Resistivity'
+  res_trackname = f'Resistivity ({res_curve})'
   res_left = st.sidebar.number_input('Resistivity Left Scale', min_value=0.0001, max_value=1000000.0000, value=0.02)
   res_right = st.sidebar.number_input('Resistivity Right Scale', min_value=0.0001, max_value=1000000.0000, value = 2000.0000)
   res_cutoff = st.sidebar.number_input('Resistivity Cutoff', min_value=0.01, max_value=1000.00, value=100.00)
-  res_shading = 'lightcoral'
+  res_shading = st.sidebar.radio('Resistivity Shading',['none','lightcoral', 'lightgreen'])
 
   st.sidebar.title('Density Logs')
   den_color = 'red'
-  den_trackname = 'Density'
+  den_trackname = f'Density ({den_curve})'
   den_left = st.sidebar.number_input('Density Left Scale', min_value=0.00, value=1.95, step=0.05)
   den_right = st.sidebar.number_input('Density Right Scale', max_value=3.00, value=2.95, step=0.05)
 
   st.sidebar.title('Neutron Logs')
   neu_color = 'blue'
-  neu_trackname = 'Neutron'
+  neu_trackname = f'Neutron ({neu_curve})'
   neu_mean = np.nanmean(las_df[str(neu_curve)])
   if neu_mean < 1 :
     neu_left = st.sidebar.number_input('Neutron Left Scale', min_value=-50.00, value=0.45)
@@ -127,9 +132,9 @@ if file:
     neu_left = st.sidebar.number_input('Neutron Left Scale', min_value=-50.00, value=45.00)
     neu_right = st.sidebar.number_input('Neutron Right Scale', min_value=-50.00, value=-15.00)
 
-  den_neu_div = 5
-  dn_xover = st.sidebar.radio('D-N Colour',['yellow','gold'])
-  dn_sep = st.sidebar.radio('N-D Colour',['lightgray','green'])
+  den_neu_div = st.sidebar.radio('Number of Division:',[5,6])
+  dn_xover = st.sidebar.radio('D-N Colour',['yellow','gold','none'])
+  dn_sep = st.sidebar.radio('N-D Colour',['lightgray','green', 'none'])
   
 #=================
   st.title('Triple Combo Plot')
@@ -249,4 +254,6 @@ if file:
 
   plt.show() 
   st.pyplot(fig)
+
+
 
