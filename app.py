@@ -54,7 +54,8 @@ if file:
   st.text(f'================================================\n{curvename}')
 
   st.subheader('Curve Data')
-  st.markdown('LAS file curve data is displayed as a table below, similar to excel sheet.\nMove left-right and up-down, or expand to see more')
+  st.markdown('LAS file curve data is displayed as a table below, similar to excel sheet.')
+  st.markdown('Move left-right and up-down, or expand to see more.')
   st.write(las_df)
 
   
