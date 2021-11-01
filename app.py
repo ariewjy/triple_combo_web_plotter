@@ -65,16 +65,31 @@ if file:
 
   st.title('Selecting Curves')
   curves = las_df.columns.values
+  
+  if 'GR' in curves:
+    gr_col = las_df.columns.get_loc('GR')
+  else:
+    gr_col = 0
+  
+  if 'ILD' in curves:
+    res_col = las_df.columns.get_loc('ILD')
+  else:
+    res_col = 0
 
-  # gr_col = las_df.columns.get_loc('GR')
-  # res_col = las_df.columns.get_loc('ILD')
-  # den_col = las_df.columns.get_loc('RHOB')
-  # neu_col = las_df.columns.get_loc('NPHI')
+  if 'RHOB' in curves:
+    den_col = las_df.columns.get_loc('RHOB')
+  else:
+    den_col = 0
 
-  gr_curve = st.selectbox('select the gamma ray curve', curves)
-  res_curve = st.selectbox('select the resistivity curve', curves)
-  den_curve = st.selectbox('select the density curve', curves)
-  neu_curve = st.selectbox('select the neutron curve', curves)
+  if 'NPHI' in curves:
+    neu_col = las_df.columns.get_loc('NPHI')
+  else:
+    neu_col = 0
+    
+  gr_curve = st.selectbox('select the gamma ray curve', curves, index=gr_col)
+  res_curve = st.selectbox('select the resistivity curve', curves, index=res_col)
+  den_curve = st.selectbox('select the density curve', curves, index=den_col)
+  neu_curve = st.selectbox('select the neutron curve', curves, index=neu_col)
 
   curve_list = [gr_curve, res_curve, den_curve, neu_curve]
 
