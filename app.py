@@ -270,6 +270,21 @@ if file:
 
   plt.show() 
   st.pyplot(fig)
+  
+  #download feature
+  def create_download_link(val, filename):
+    b64 = base64.b64encode(val)  # val looks like b'...'
+    return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
 
+  export_as_pdf = st.button("Export Plot to PDF")
+
+  if export_as_pdf:
+    pdf = FPDF()
+    pdf.add_page()
+    with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+      fig.savefig(tmpfile.name)
+      pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*16))
+    html = create_download_link(pdf.output(dest="S").encode("latin-1"), well_name)
+    st.markdown(html, unsafe_allow_html=True)
 
 
