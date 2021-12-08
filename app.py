@@ -5,9 +5,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-# from fpdf import FPDF
-# import base64
-# from tempfile import NamedTemporaryFile
+from fpdf import FPDF
+import base64
+from tempfile import NamedTemporaryFile
 
 
 sns.set(style='ticks')
@@ -159,7 +159,7 @@ if file:
   
 #=================
   st.title('Triple Combo Plot')
-  st.write('Right Click and Save as Image to Download the File')
+#   st.write('Right Click and Save as Image to Download the File')
 
   fig, ax = plt.subplots(figsize=(plot_w,plot_h))
   fig.suptitle(f"===================\nWell: {well_name}\n(Interval: {top_depth} - {bot_depth})\n===================\n ---(c) Aditya Arie Wijaya,2021---\nhttps://github.com/ariewjy\n===================",
@@ -277,20 +277,20 @@ if file:
   st.pyplot(fig)
   
   #download feature
-#   def create_download_link(val, filename):
-#     b64 = base64.b64encode(val)  # val looks like b'...'
-#     return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
+  def create_download_link(val, filename):
+    b64 = base64.b64encode(val)  # val looks like b'...'
+    return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
 
-#   export_as_pdf = st.button("Export Plot to PDF")
+  export_as_pdf = st.button("Export Plot to PDF")
 
-#   if export_as_pdf:
-#     pdf = FPDF()
-#     pdf.add_page()
-#     with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-#       fig.savefig(tmpfile.name)
-#       pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*16))
-#     html = create_download_link(pdf.output(dest="S").encode("latin-1"), well_name)
-#     st.markdown(html, unsafe_allow_html=True)
+  if export_as_pdf:
+    pdf = FPDF()
+    pdf.add_page()
+    with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+      fig.savefig(tmpfile.name)
+      pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*16))
+    html = create_download_link(pdf.output(dest="S").encode("latin-1"), well_name)
+    st.markdown(html, unsafe_allow_html=True)
 
 
 
