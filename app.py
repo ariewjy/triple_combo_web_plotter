@@ -5,6 +5,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from fpdf import FPDF
+import base64
+from tempfile import NamedTemporaryFile
+
+
 sns.set(style='ticks')
 
 
@@ -12,8 +17,7 @@ st.set_option('deprecation.showfileUploaderEncoding', False)
 
 st.title('Welcome to Triple Combo Web-App Plotter')
 st.text('This is a web app to plot your LAS 2.0 file data into a triple combo plot.\n(c) 2021, Aditya Arie Wijaya\n=============================')
-st.text('LinkedIn: www.linkedin.com/in/adityaariewijaya89')
-st.text('github: https://github.com/ariewjy')
+st.text('Suggestions --> LinkedIn: www.linkedin.com/in/adityaariewijaya89')
 
 st.title('LAS File Data')
 
@@ -43,6 +47,7 @@ if file:
   company_name =  las_file.header['Well'].COMP.value
   date =  las_file.header['Well'].DATE.value
   curvename = las_file.curves
+  
 
   st.subheader('Well Information')
   st.text(f'================================================\nWell Name : {well_name}')
@@ -55,13 +60,13 @@ if file:
   st.text(f'================================================\n{curvename}')
 
   st.subheader('Curve Data')
-  st.markdown('LAS file curve data is displayed as a table below, similar to excel sheet. Move left-right and up-down, or expand to see more.')
+  st.markdown('LAS file curve data is displayed as a table below, similar to excel sheet.\nMove left-right and up-down, or expand to see more')
   st.write(las_df)
 
   
  
-  # for item in las_file.well:
-  #   st.text(f"{item.descr} ({item.mnemonic}): {item.value}")
+  for item in las_file.well:
+    st.text(f"{item.descr} ({item.mnemonic}): {item.value}")
 
   st.title('Selecting Curves')
   curves = las_df.columns.values
@@ -103,7 +108,7 @@ if file:
   bot_depth = st.sidebar.number_input('Bottom Depth', min_value=0.00, value=(stop_depth), step=100.00)
 
   plot_w = 12
-  plot_h = 16
+  plot_h = 17
 
   title_size = 12
   title_height = 1.0
@@ -264,9 +269,9 @@ if file:
   plt.tight_layout()
 
   # if savepdf is True:
-    
-  #   file = plt.savefig((f"{well_name}_triple_combo_plot.pdf"), dpi=150, bbox_inches='tight')
-  #   st.download_button(label='Download Plot as PDF',data= file)
+  # pdf.add_image(temp_file.name)
+  # file = plt.savefig((f"{well_name}_triple_combo_plot.pdf"), dpi=150, bbox_inches='tight')
+  # st.download_button(label='Download Plot as PDF',data= file)
 
   plt.show() 
   st.pyplot(fig)
@@ -287,4 +292,10 @@ if file:
     html = create_download_link(pdf.output(dest="S").encode("latin-1"), well_name)
     st.markdown(html, unsafe_allow_html=True)
 
+
+
+
+
+
+  
 
