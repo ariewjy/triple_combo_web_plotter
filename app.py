@@ -65,8 +65,8 @@ if file:
 
   
  
-  for item in las_file.well:
-    st.text(f"{item.descr} ({item.mnemonic}): {item.value}")
+#   for item in las_file.well:
+#     st.text(f"{item.descr} ({item.mnemonic}): {item.value}")
 
   st.title('Selecting Curves')
   curves = las_df.columns.values
