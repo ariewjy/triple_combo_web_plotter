@@ -5,9 +5,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from fpdf import FPDF
-import base64
-from tempfile import NamedTemporaryFile
+# from fpdf import FPDF
+# import base64
+# from tempfile import NamedTemporaryFile
 
 
 sns.set(style='ticks')
