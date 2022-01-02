@@ -8,6 +8,8 @@ import seaborn as sns
 from fpdf import FPDF
 import base64
 from tempfile import NamedTemporaryFile
+from pyxlsb import open_workbook as open_xlsb
+from io import BytesIO
 
 
 sns.set(style='ticks')
@@ -298,10 +300,10 @@ st.title(' ')
 ####### VSH-------------
 mode = st.radio(
     "Activate Formation Evaluation Module?",
-    ('Yes', 'No')
+    ('Not Now', 'Yes Please!')
 )
 
-if mode == 'Yes':
+if mode == 'Yes Please!':
 
   st.title('Formation Evaluation')
 
@@ -312,6 +314,7 @@ if mode == 'Yes':
   gr_max = st.sidebar.number_input('GR at 100% Shale', min_value=0, value=150, max_value=300, step=10)
   vsh_log = (gr_log - gr_min)/(gr_max-gr_min) * 100
   vsh_color = 'black'
+  well_df['VSH'] = vsh_log
   
   shale_shading = st.sidebar.radio('Shale Shading',['green','gray'])
   sand_shading = st.sidebar.radio('Sand Shading',['gold','yellow'])
@@ -332,6 +335,9 @@ if mode == 'Yes':
     # dphi_right = st.sidebar.number_input('Right DPHI Scale', min_value=0.0, max_value=1.0, value=0.0, step=0.1)
     # dphi_color = 'black'
     tpor_log = dphi_log  
+    tpor_log = np.clip(tpor_log, 0.001, 1)
+    epor_log = tpor_log*(1-vsh_log/100)
+    epor_log = np.clip(epor_log, 0.001, 1)
 
   if mode == 'Density-Neutron':
     density_mat = st.sidebar.number_input('Matrix Density', min_value=1.0, value=2.65, step=0.1)
@@ -341,20 +347,25 @@ if mode == 'Yes':
     # dphi_left = st.sidebar.number_input('Left DPHI Scale', min_value=0.0, max_value=1.0, value=0.5, step=0.1)
     # dphi_right = st.sidebar.number_input('Right DPHI Scale', min_value=0.0, max_value=1.0, value=0.0, step=0.1)
     # dphi_color = 'black'
-    tpor_log = dnphi_log  
+    tpor_log = dnphi_log
+    tpor_log = np.clip(tpor_log, 0.001, 1)
+    epor_log = tpor_log*(1-vsh_log/100)
+    epor_log = np.clip(epor_log, 0.001, 1)
   
   mode = st.sidebar.radio(
     "Porosity to Display",
     ('Total Porosity', 'Effective Porosity')
 )
   if mode == 'Total Porosity':
-    por_log = tpor_log
+    por_log = tpor_log*100
   if mode == 'Effective Porosity':
-    epor_log = tpor_log*(1-vsh_log/100)
-    por_log = epor_log
+    por_log = epor_log*100
 
-  por_left = st.sidebar.number_input('Left Scale', min_value=0.0, max_value=1.0, value=0.5, step=0.1)
-  por_right = st.sidebar.number_input('Right Scale', min_value=0.0, max_value=1.0, value=0.0, step=0.1)
+  well_df['TPOR'] = tpor_log
+  well_df['EPOR'] = epor_log
+  
+  por_left = st.sidebar.number_input('Left Scale', min_value=0, max_value=100, value=50, step=10)
+  por_right = st.sidebar.number_input('Right Scale', min_value=0, max_value=100, value=0, step=10)
   por_color = 'black'
   por_shading = st.sidebar.radio('Total Porosity Shading',['aqua','none'])
   # sand_shading = st.sidebar.radio('Sand Shading',['gold','yellow'])
@@ -363,20 +374,32 @@ if mode == 'Yes':
 
   #sidebar-Sw
   st.sidebar.title('Water Saturation')
-  
-  rw = st.sidebar.number_input('Formation Water Resistivity', min_value=0.0, value=0.01, step=0.01)
-  m_value = st.sidebar.number_input('Porosity Exponent', min_value=0, value=2, max_value=12)
-  n_value = st.sidebar.number_input('Saturation Exponent', min_value=0, value=2, max_value=3)
+  mode = st.sidebar.radio(
+    "Calculate Rw from Salinity and Temp",
+    ('No, I have my own Rw', 'Yes, Please!')
+)
+  if mode == 'Yes, Please!':
+    water_sal = st.sidebar.number_input ('Input Salinity in NaCl ppm', min_value=0, value =25000)
+    fm_temp = st.sidebar.number_input('Formation Temperature in Fahrenheit', min_value=10, value = 75)
+    rw_calc = (400000 / fm_temp / water_sal) ** 0.88
+    st.sidebar.subheader(f'The Calculated Rw = {round(rw_calc,3)} ohm-m')
+  rw = st.sidebar.number_input('Formation Water Resistivity (Rw)', min_value=0.0, value=0.01, step=0.01)
+  a_value = st.sidebar.number_input('Turtuosity Factor (a)', min_value=0.0, value=1.0, max_value=10.0, step=0.1)
+  m_value = st.sidebar.number_input('Porosity Exponent (m)', min_value=0.0, value=2.0, max_value=10.0, step=0.1)
+  n_value = st.sidebar.number_input('Saturation Exponent (n)', min_value=0.0, value=2.0, max_value=10.0, step=0.1)
   # atas = rw/res_log
   # bawah = por_log**m_value
   # sw_log = (atas/bawah)**(1/n_value)
-  sw_log = (rw/(res_log*por_log**m_value))**(1/n_value)
+  por_input = por_log/100
+  sw_log = (rw/(res_log*por_input**m_value))**(a_value/n_value)*100
+  sw_log = np.clip(sw_log, 0, 100)
   sw_color = 'black'
   hc_shading = st.sidebar.radio('Hydrocarbon Shading',['lime','coral'])
+  well_df['SW'] = sw_log
   
   # shale_shading = st.sidebar.radio('Shale Shading',['green','gray'])
   # sand_shading = st.sidebar.radio('Sand Shading',['gold','yellow'])
-  sw_left = 1
+  sw_left = 100
   sw_right = 0
   sw_trackname = f'Water Saturation (%)\n'
 
@@ -450,7 +473,7 @@ if mode == 'Yes':
   ax3.xaxis.set_label_position("top")
 
   ##area-fill sw
-  ax3.fill_betweenx(well_df['DEPTH'], 1, sw_log, interpolate=True, color = hc_shading, linewidth=0)
+  ax3.fill_betweenx(well_df['DEPTH'], 100, sw_log, interpolate=True, color = hc_shading, linewidth=0)
   ax3.fill_betweenx(well_df['DEPTH'], sw_log, 0, interpolate=True, color = 'lightblue', linewidth=0)
   
   plt.tight_layout()
@@ -473,3 +496,6 @@ if mode == 'Yes':
       pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*16))
     html = create_download_link(pdf.output(dest="S").encode("latin-1"), f'{well_name} - Form Eval')
     st.markdown(html, unsafe_allow_html=True)
+  
+  # st.write(well_df)
+  
