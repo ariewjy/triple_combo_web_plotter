@@ -8,8 +8,8 @@ import seaborn as sns
 from fpdf import FPDF
 import base64
 from tempfile import NamedTemporaryFile
-from pyxlsb import open_workbook as open_xlsb
-from io import BytesIO
+# from pyxlsb import open_workbook as open_xlsb
+# from io import BytesIO
 
 
 sns.set(style='ticks')
