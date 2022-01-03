@@ -133,8 +133,8 @@ if file:
   st.sidebar.title('Resistivity Logs')
   res_color = 'purple'
   res_trackname = f'Resistivity ({res_curve})'
-  res_left = st.sidebar.number_input('Resistivity Left Scale', min_value=0.0001, max_value=1000000.0000, value=0.02)
-  res_right = st.sidebar.number_input('Resistivity Right Scale', min_value=0.0001, max_value=1000000.0000, value = 2000.0000)
+  res_left = st.sidebar.number_input('Resistivity Left Scale', min_value=0.0001, max_value=1000000.0000, value=0.2)
+  res_right = st.sidebar.number_input('Resistivity Right Scale', min_value=0.0001, max_value=1000000.0000, value = 20000.0000)
   res_cutoff = st.sidebar.number_input('Resistivity Cutoff', min_value=0.01, max_value=1000.00, value=100.00)
   res_shading = st.sidebar.radio('Resistivity Shading',['none','lightcoral', 'lightgreen'])
 
@@ -309,24 +309,44 @@ if mode == 'Yes Please!':
 
   #sidebar-vsh
   st.sidebar.title('Volume of Shale')
-  
-  gr_min = st.sidebar.number_input('GR at 0% Shale', min_value=0, value=10, step=10)
-  gr_max = st.sidebar.number_input('GR at 100% Shale', min_value=0, value=150, max_value=300, step=10)
-  vsh_log = (gr_log - gr_min)/(gr_max-gr_min) * 100
-  vsh_color = 'black'
-  well_df['VSH'] = vsh_log
-  
+  mode = st.sidebar.radio(
+      "Calculate VSH from:",
+      ('Gamma-Ray', 'Density-Neutron')
+  )
+
+  if mode == 'Gamma-Ray':
+    gr_min = st.sidebar.number_input('GR at 0% Shale', min_value=0, value=10, step=10)
+    gr_max = st.sidebar.number_input('GR at 100% Shale', min_value=0, value=150, max_value=300, step=10)
+    vsh_log = (gr_log - gr_min)/(gr_max-gr_min) * 100
+    vsh_log = np.clip(vsh_log, 0, 100)
+    vsh_color = 'black'
+    well_df['VSH'] = vsh_log
+
+  if mode == 'Density-Neutron':
+    denmat = st.sidebar.number_input('Matrix-Density', min_value=1.0, value=2.65, step=0.1)
+    denfl = st.sidebar.number_input('Fluid-Density', min_value=0.0, value=1.0, max_value=1.5, step=0.1)
+    dphi = (denmat - den_log)/(denmat-denfl)
+    den_shale = st.sidebar.number_input('Density at 100% Shale', min_value=1.0, value=2.7, step=0.1)
+    dphi_shale = (den_shale - den_log)/(den_shale-denfl)
+    dphi_shale = np.clip(dphi_shale, 0, 1)
+    neu_shale = st.sidebar.number_input('Neutron at 100% Shale', min_value=0.0, value=0.35, step=0.1)
+    vsh_log = (neu_log - dphi)/(neu_shale-dphi_shale) *100
+    vsh_log = np.clip(vsh_log, 0, 100)
+    vsh_color = 'black'
+    well_df['VSH'] = vsh_log
+
+    
   shale_shading = st.sidebar.radio('Shale Shading',['green','gray'])
-  sand_shading = st.sidebar.radio('Sand Shading',['gold','yellow'])
+  sand_shading = st.sidebar.radio('Sand/Carbonate Shading',['gold','royalblue'])
 
-  vsh_trackname = f'Volume of Shale (%)\n'
+  vsh_trackname = f'Vshale {mode} (%)\n'
 
-  #sidebar-porosity
+    #sidebar-porosity
   st.sidebar.title('Porosity')
   mode = st.sidebar.radio(
     "Choose the Porosity Method",
-    ('Density', 'Density-Neutron')
-)
+    ('Density-Neutron', 'Density')
+  )
   if mode == 'Density':
     density_mat = st.sidebar.number_input('Matrix Density', min_value=1.0, value=2.65, step=0.1)
     density_fluid = st.sidebar.number_input('Fluid Density', min_value=0.0, value=1.0, max_value=1.5, step=0.1)
@@ -351,11 +371,11 @@ if mode == 'Yes Please!':
     tpor_log = np.clip(tpor_log, 0.001, 1)
     epor_log = tpor_log*(1-vsh_log/100)
     epor_log = np.clip(epor_log, 0.001, 1)
-  
+
   mode = st.sidebar.radio(
     "Porosity to Display",
-    ('Total Porosity', 'Effective Porosity')
-)
+    ('Effective Porosity', 'Total Porosity')
+  )
   if mode == 'Total Porosity':
     por_log = tpor_log*100
   if mode == 'Effective Porosity':
@@ -363,7 +383,7 @@ if mode == 'Yes Please!':
 
   well_df['TPOR'] = tpor_log
   well_df['EPOR'] = epor_log
-  
+
   por_left = st.sidebar.number_input('Left Scale', min_value=0, max_value=100, value=50, step=10)
   por_right = st.sidebar.number_input('Right Scale', min_value=0, max_value=100, value=0, step=10)
   por_color = 'black'
@@ -377,13 +397,13 @@ if mode == 'Yes Please!':
   mode = st.sidebar.radio(
     "Calculate Rw from Salinity and Temp",
     ('No, I have my own Rw', 'Yes, Please!')
-)
+  )
   if mode == 'Yes, Please!':
     water_sal = st.sidebar.number_input ('Input Salinity in NaCl ppm', min_value=0, value =25000)
     fm_temp = st.sidebar.number_input('Formation Temperature in Fahrenheit', min_value=10, value = 75)
     rw_calc = (400000 / fm_temp / water_sal) ** 0.88
     st.sidebar.subheader(f'The Calculated Rw = {round(rw_calc,3)} ohm-m')
-  rw = st.sidebar.number_input('Formation Water Resistivity (Rw)', min_value=0.0, value=0.01, step=0.01)
+  rw = st.sidebar.number_input('Formation Water Resistivity (Rw)', min_value=0.0, value=0.05, step=0.01)
   a_value = st.sidebar.number_input('Turtuosity Factor (a)', min_value=0.0, value=1.0, max_value=10.0, step=0.1)
   m_value = st.sidebar.number_input('Porosity Exponent (m)', min_value=0.0, value=2.0, max_value=10.0, step=0.1)
   n_value = st.sidebar.number_input('Saturation Exponent (n)', min_value=0.0, value=2.0, max_value=10.0, step=0.1)
@@ -396,7 +416,7 @@ if mode == 'Yes Please!':
   sw_color = 'black'
   hc_shading = st.sidebar.radio('Hydrocarbon Shading',['lime','coral'])
   well_df['SW'] = sw_log
-  
+
   # shale_shading = st.sidebar.radio('Shale Shading',['green','gray'])
   # sand_shading = st.sidebar.radio('Sand Shading',['gold','yellow'])
   sw_left = 100
@@ -475,12 +495,12 @@ if mode == 'Yes Please!':
   ##area-fill sw
   ax3.fill_betweenx(well_df['DEPTH'], 100, sw_log, interpolate=True, color = hc_shading, linewidth=0)
   ax3.fill_betweenx(well_df['DEPTH'], sw_log, 0, interpolate=True, color = 'lightblue', linewidth=0)
-  
+
   plt.tight_layout()
 
   plt.show() 
   st.pyplot(fig)
-  
+
   #download feature
   def create_download_link(val, filename):
     b64 = base64.b64encode(val)  # val looks like b'...'
@@ -496,6 +516,6 @@ if mode == 'Yes Please!':
       pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*16))
     html = create_download_link(pdf.output(dest="S").encode("latin-1"), f'{well_name} - Form Eval')
     st.markdown(html, unsafe_allow_html=True)
-  
+
   # st.write(well_df)
-  
+
