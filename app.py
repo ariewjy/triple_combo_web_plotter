@@ -283,7 +283,7 @@ if file:
     b64 = base64.b64encode(val)  # val looks like b'...'
     return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
 
-  export_as_pdf = st.button("Export Plot to PDF")
+  export_as_pdf = st.button("Export Triple Combo Plot to PDF")
 
   if export_as_pdf:
     pdf = FPDF()
