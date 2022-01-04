@@ -27,5 +27,5 @@ The website is available at __www.plotpetrophysics.xyz__
 
 
 I put some tutorial on how to make the plot using the website. Some things changed (website link, features update), but the general flow is still the same. 
-https://github.com/ariewjy/triple_combo_web_plotter/blob/main/WebAppTCPlotter_Tutorial.pdf
+
 
