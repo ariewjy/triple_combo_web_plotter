@@ -1,10 +1,10 @@
 # Welcome to Online Petrophysics Plotter :wave:
 
-####This is a documentation of online website to plot LAS file data into a triple combo plot and formation evaluation plot.
+#### This is a documentation of online website to plot LAS file data into a triple combo plot and formation evaluation plot.
 
 The website is available at __www.plotpetrophysics.xyz__ 
 
-####Features:
+#### Features:
 - Adjustable depth, color, and curve-shading.
 - A built in example from pre-loaded LAS file.
 - Ability to calculate Rw from Salinity and Temperature.
