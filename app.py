@@ -525,47 +525,47 @@ if mode == 'Yes Please!':
 
   # st.write(well_df)
 
-# Histogram
+  # Histogram
 
-st.title('Histogram')
-st.sidebar.title('Histogram')
-well_df = well_df.drop('DEPTH', axis=1, inplace=False)
-curve_hist = st.selectbox('select the curve for histogram', well_df.columns)
-scale_hist_left = st.sidebar.number_input ('Left Scale',value= well_df[curve_hist].min())
-scale_hist_right = st.sidebar.number_input ('Right Scale',value= well_df[curve_hist].max())
-agree = st.sidebar.checkbox('Logarithmic Scale')
-if agree:
-  log_value_hist = True
-else:
-  log_value_hist = False
-fig = px.histogram(well_df, x=curve_hist, log_x = log_value_hist)
-st.plotly_chart(fig)
- 
-# Scatter Plot
-st.title('Scatter Plot')
-st.sidebar.title('Scatter Plot')
-# well_df = well_df.drop('DEPTH', axis=1, inplace=False)
-x_curve = st.sidebar.selectbox('select the curve for X-axis', well_df.columns)
-scale_x_left = st.sidebar.number_input ('Left Scale X-axis', value= well_df[x_curve].min())
-scale_x_right = st.sidebar.number_input ('Right Scale X-axis', value = well_df[x_curve].max())
-agreex = st.sidebar.checkbox('Logarithmic Scale on X')
-if agreex:
-  log_valuex = True
-else:
-  log_valuex=False
-y_curve = st.sidebar.selectbox('select the curve for Y-axis', well_df.columns)
-scale_y_left = st.sidebar.number_input ('Left Scale Y-axis', value= well_df[y_curve].min())
-scale_y_right = st.sidebar.number_input ('Right Scale Y-axis', value = well_df[y_curve].max())
-agreey = st.sidebar.checkbox('Logarithmic Scale on Y')
-if agreey:
-  log_valuey = True
-else:
-  log_valuey=False
-z_curve = st.sidebar.selectbox('select the curve for Z-axis', well_df.columns)
-scale_z_left = st.sidebar.number_input ('Left Scale Z-axis', value= well_df[z_curve].min())
-scale_z_right = st.sidebar.number_input ('Right Scale Z-axis', value = well_df[z_curve].max())
+  st.title('Histogram')
+  st.sidebar.title('Histogram')
+  well_df = well_df.drop('DEPTH', axis=1, inplace=False)
+  curve_hist = st.selectbox('select the curve for histogram', well_df.columns)
+  scale_hist_left = st.sidebar.number_input ('Left Scale',value= well_df[curve_hist].min())
+  scale_hist_right = st.sidebar.number_input ('Right Scale',value= well_df[curve_hist].max())
+  agree = st.sidebar.checkbox('Logarithmic Scale')
+  if agree:
+    log_value_hist = True
+  else:
+    log_value_hist = False
+  fig = px.histogram(well_df, x=curve_hist, log_x = log_value_hist)
+  st.plotly_chart(fig)
+  
+  # Scatter Plot
+  st.title('Scatter Plot')
+  st.sidebar.title('Scatter Plot')
+  # well_df = well_df.drop('DEPTH', axis=1, inplace=False)
+  x_curve = st.sidebar.selectbox('select the curve for X-axis', well_df.columns)
+  scale_x_left = st.sidebar.number_input ('Left Scale X-axis', value= well_df[x_curve].min())
+  scale_x_right = st.sidebar.number_input ('Right Scale X-axis', value = well_df[x_curve].max())
+  agreex = st.sidebar.checkbox('Logarithmic Scale on X')
+  if agreex:
+    log_valuex = True
+  else:
+    log_valuex=False
+  y_curve = st.sidebar.selectbox('select the curve for Y-axis', well_df.columns)
+  scale_y_left = st.sidebar.number_input ('Left Scale Y-axis', value= well_df[y_curve].min())
+  scale_y_right = st.sidebar.number_input ('Right Scale Y-axis', value = well_df[y_curve].max())
+  agreey = st.sidebar.checkbox('Logarithmic Scale on Y')
+  if agreey:
+    log_valuey = True
+  else:
+    log_valuey=False
+  z_curve = st.sidebar.selectbox('select the curve for Z-axis', well_df.columns)
+  scale_z_left = st.sidebar.number_input ('Left Scale Z-axis', value= well_df[z_curve].min())
+  scale_z_right = st.sidebar.number_input ('Right Scale Z-axis', value = well_df[z_curve].max())
 
-fig=px.scatter(well_df, x=x_curve, y=y_curve,log_y=log_valuey,log_x = log_valuex,
-               color = z_curve, range_x=[scale_x_left, scale_x_right])
+  fig=px.scatter(well_df, x=x_curve, y=y_curve,log_y=log_valuey,log_x = log_valuex,
+                color = z_curve, range_x=[scale_x_left, scale_x_right])
 
-st.plotly_chart(fig)
+  st.plotly_chart(fig)
