@@ -1,3 +1,4 @@
+from altair.vegalite.v4.api import value
 import lasio
 from numpy.core.fromnumeric import mean
 import streamlit as st
@@ -5,15 +6,14 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.express as px
 from fpdf import FPDF
 import base64
 from tempfile import NamedTemporaryFile
 # from pyxlsb import open_workbook as open_xlsb
 # from io import BytesIO
 
-
 sns.set(style='ticks')
-
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
 
@@ -98,9 +98,9 @@ if file:
   res_curve = st.selectbox('select the resistivity curve', curves, index=res_col)
   den_curve = st.selectbox('select the density curve', curves, index=den_col)
   neu_curve = st.selectbox('select the neutron curve', curves, index=neu_col)
-
+  
   curve_list = [gr_curve, res_curve, den_curve, neu_curve]
-
+  
 #==========================
   
   st.sidebar.title('Plot Setting')
@@ -159,13 +159,14 @@ if file:
   den_neu_div = st.sidebar.radio('Number of Division:',[5,6])
   dn_xover = st.sidebar.radio('D-N Colour',['yellow','gold','none'])
   dn_sep = st.sidebar.radio('N-D Colour',['lightgray','green', 'none'])
-  
+
+
 #=================
   st.title('Triple Combo Plot')
 #   st.write('Right Click and Save as Image to Download the File')
 
   fig, ax = plt.subplots(figsize=(plot_w,plot_h))
-  fig.suptitle(f"===================\nWell: {well_name}\n(Interval: {top_depth} - {bot_depth})\n===================\n ---(c) Aditya Arie Wijaya,2021---\nhttps://github.com/ariewjy\n===================",
+  fig.suptitle(f"Triple Combo Plot\n===================\nWell: {well_name}\n(Interval: {top_depth} - {bot_depth})\n===================\n ---(c) Aditya Arie Wijaya,2021---\nhttps://github.com/ariewjy\n===================",
               size=title_size, y=title_height)
 
   gr_log=las_df[curve_list[0]]
@@ -424,6 +425,10 @@ if mode == 'Yes Please!':
   sw_right = 0
   sw_trackname = f'Water Saturation (%)\n'
 
+  fig, ax = plt.subplots(figsize=(plot_w,plot_h))
+  fig.suptitle(f"Formation Evaluation Plot\n===================\nWell: {well_name}\n(Interval: {top_depth} - {bot_depth})\n===================\n ---(c) Aditya Arie W,2021---\nhttps://github.com/ariewjy\n===================",
+              size=title_size, y=title_height)
+
   #Set up the plot axes
   ax1 = plt.subplot2grid((1,3), (0,0), rowspan=1, colspan = 1)
   ax2 = plt.subplot2grid((1,3), (0,1), rowspan=1, colspan = 1)
@@ -520,3 +525,47 @@ if mode == 'Yes Please!':
 
   # st.write(well_df)
 
+# Histogram
+
+st.title('Histogram')
+st.sidebar.title('Histogram')
+well_df = well_df.drop('DEPTH', axis=1, inplace=False)
+curve_hist = st.selectbox('select the curve for histogram', well_df.columns)
+scale_hist_left = st.sidebar.number_input ('Left Scale',value= well_df[curve_hist].min())
+scale_hist_right = st.sidebar.number_input ('Right Scale',value= well_df[curve_hist].max())
+agree = st.sidebar.checkbox('Logarithmic Scale')
+if agree:
+  log_value_hist = True
+else:
+  log_value_hist = False
+fig = px.histogram(well_df, x=curve_hist, log_x = log_value_hist)
+st.plotly_chart(fig)
+ 
+# Scatter Plot
+st.title('Scatter Plot')
+st.sidebar.title('Scatter Plot')
+# well_df = well_df.drop('DEPTH', axis=1, inplace=False)
+x_curve = st.sidebar.selectbox('select the curve for X-axis', well_df.columns)
+scale_x_left = st.sidebar.number_input ('Left Scale X-axis', value= well_df[x_curve].min())
+scale_x_right = st.sidebar.number_input ('Right Scale X-axis', value = well_df[x_curve].max())
+agreex = st.sidebar.checkbox('Logarithmic Scale on X')
+if agreex:
+  log_valuex = True
+else:
+  log_valuex=False
+y_curve = st.sidebar.selectbox('select the curve for Y-axis', well_df.columns)
+scale_y_left = st.sidebar.number_input ('Left Scale Y-axis', value= well_df[y_curve].min())
+scale_y_right = st.sidebar.number_input ('Right Scale Y-axis', value = well_df[y_curve].max())
+agreey = st.sidebar.checkbox('Logarithmic Scale on Y')
+if agreey:
+  log_valuey = True
+else:
+  log_valuey=False
+z_curve = st.sidebar.selectbox('select the curve for Z-axis', well_df.columns)
+scale_z_left = st.sidebar.number_input ('Left Scale Z-axis', value= well_df[z_curve].min())
+scale_z_right = st.sidebar.number_input ('Right Scale Z-axis', value = well_df[z_curve].max())
+
+fig=px.scatter(well_df, x=x_curve, y=y_curve,log_y=log_valuey,log_x = log_valuex,
+               color = z_curve, range_x=[scale_x_left, scale_x_right])
+
+st.plotly_chart(fig)
