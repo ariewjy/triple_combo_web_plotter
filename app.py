@@ -325,6 +325,10 @@ if mode == 'Yes Please!':
     vsh_color = 'black'
     well_df['VSH'] = vsh_log
 
+  if neu_mean > 1 :
+    neu_log = neu_log/100
+  else:
+    neu_log=neu_log
   if mode == 'Density-Neutron':
     denmat = st.sidebar.number_input('Matrix-Density', min_value=1.0, value=2.65, step=0.1)
     denfl = st.sidebar.number_input('Fluid-Density', min_value=0.0, value=1.0, max_value=1.5, step=0.1)
@@ -335,10 +339,7 @@ if mode == 'Yes Please!':
     neu_shale = st.sidebar.number_input('Neutron at 100% Shale', min_value=0.0, value=0.35, step=0.1)
     neu_mean = neu_log.mean()
     # st.write(neu_mean)
-    if neu_mean > 1 :
-      neu_log = neu_log/100
-    else:
-      neu_log=neu_log
+    
 
     vsh_log = (neu_log - dphi)/(neu_shale-dphi_shale) *100
     vsh_log = np.clip(vsh_log, 0, 100)
