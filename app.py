@@ -319,6 +319,7 @@ if mode == 'Yes Please!':
   if mode == 'Gamma-Ray':
     gr_min = st.sidebar.number_input('GR at 0% Shale', min_value=0, value=10, step=10)
     gr_max = st.sidebar.number_input('GR at 100% Shale', min_value=0, value=150, max_value=300, step=10)
+    # st.write(gr_log)
     vsh_log = (gr_log - gr_min)/(gr_max-gr_min) * 100
     vsh_log = np.clip(vsh_log, 0, 100)
     vsh_color = 'black'
@@ -332,6 +333,13 @@ if mode == 'Yes Please!':
     dphi_shale = (den_shale - den_log)/(den_shale-denfl)
     dphi_shale = np.clip(dphi_shale, 0, 1)
     neu_shale = st.sidebar.number_input('Neutron at 100% Shale', min_value=0.0, value=0.35, step=0.1)
+    neu_mean = neu_log.mean()
+    # st.write(neu_mean)
+    if neu_mean > 1 :
+      neu_log = neu_log/100
+    else:
+      neu_log=neu_log
+
     vsh_log = (neu_log - dphi)/(neu_shale-dphi_shale) *100
     vsh_log = np.clip(vsh_log, 0, 100)
     vsh_color = 'black'
@@ -459,8 +467,8 @@ if mode == 'Yes Please!':
   ax1.xaxis.set_label_position("top")
 
   ##area-fill sand and shale for VSH
-  ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=True, color = shale_shading, linewidth=0)
-  ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=True, color = sand_shading, linewidth=0)
+  ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=False, color = shale_shading, linewidth=0)
+  ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = sand_shading, linewidth=0)
 
 
   # Porosity track
