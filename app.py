@@ -525,11 +525,11 @@ if mode == 'Yes Please!':
 
   # st.write(well_df)
 
-    # Histogram
-
+# Histogram
+well_df = well_df.drop('DEPTH', axis=1, inplace=False)
     st.title('Histogram')
     st.sidebar.title('Histogram')
-    well_df = well_df.drop('DEPTH', axis=1, inplace=False)
+
     curve_hist = st.selectbox('select the curve for histogram', well_df.columns)
     scale_hist_left = st.sidebar.number_input ('Left Scale',value= well_df[curve_hist].min())
     scale_hist_right = st.sidebar.number_input ('Right Scale',value= well_df[curve_hist].max())
