@@ -566,8 +566,8 @@ if mode == 'Yes Please!':
   else:
     log_valuex=False
   y_curve = st.selectbox('select the curve for Y-axis', well_df.columns)
-  scale_y_left = st.sidebar.number_input ('Bottom Scale Y-axis', value= well_df[y_curve].min())
-  scale_y_right = st.sidebar.number_input ('Upper Scale Y-axis', value = well_df[y_curve].max())
+  scale_y_upper = st.sidebar.number_input ('Upper Scale Y-axis', value= well_df[y_curve].min())
+  scale_y_bottom = st.sidebar.number_input ('Bottom Scale Y-axis', value = well_df[y_curve].max())
   agreey = st.sidebar.checkbox('Logarithmic Scale on Y')
   if agreey:
     log_valuey = True
@@ -578,7 +578,7 @@ if mode == 'Yes Please!':
   scale_z_right = st.sidebar.number_input ('Upper Scale Z-axis', value = well_df[z_curve].max())
 
   fig=px.scatter(well_df, x=x_curve, y=y_curve,log_y=log_valuey,log_x = log_valuex,
-                color = z_curve, range_x=[scale_x_left, scale_x_right])
+                color = z_curve, range_x=[scale_x_left, scale_x_right], range_y = [scale_y_bottom, scale_y_upper])
 
   st.plotly_chart(fig)
 
