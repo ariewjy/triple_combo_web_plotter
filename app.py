@@ -20,7 +20,8 @@ st.set_option('deprecation.showfileUploaderEncoding', False)
 st.title('Welcome to Petrophysics Plotter!')
 st.text('Plot your LAS 2.0 file into a triple combo and/or formation evaluation plots.\n(c) 2021, Aditya Arie Wijaya\n=============================')
 st.text('Suggestions --> LinkedIn: www.linkedin.com/in/adityaariewijaya89')
-st.text('Tutorial: https://github.com/ariewjy/triple_combo_web_plotter')
+st.text('Documentation: https://github.com/ariewjy/triple_combo_web_plotter')
+st.text('It may take sometimes for the running process to finish, be patient and reload when stucked')
 
 st.title('LAS File Data')
 
@@ -547,7 +548,11 @@ if mode == 'Yes Please!':
     log_value_hist = True
   else:
     log_value_hist = False
+<<<<<<< HEAD
   fig = px.histogram(well_df, x=curve_hist, log_x = log_value_hist, range_x=[scale_hist_left, scale_hist_right])
+=======
+  fig = px.histogram(well_df, x=curve_hist, log_x = log_value_hist, range_x = [scale_hist_left, scale_hist_right])
+>>>>>>> c61c1b4b312a4549d7b741ef1cfca05c7b6db510
   st.plotly_chart(fig)
   
   # Scatter Plot
@@ -563,16 +568,16 @@ if mode == 'Yes Please!':
   else:
     log_valuex=False
   y_curve = st.selectbox('select the curve for Y-axis', well_df.columns)
-  scale_y_left = st.sidebar.number_input ('Left Scale Y-axis', value= well_df[y_curve].min())
-  scale_y_right = st.sidebar.number_input ('Right Scale Y-axis', value = well_df[y_curve].max())
+  scale_y_left = st.sidebar.number_input ('Bottom Scale Y-axis', value= well_df[y_curve].min())
+  scale_y_right = st.sidebar.number_input ('Upper Scale Y-axis', value = well_df[y_curve].max())
   agreey = st.sidebar.checkbox('Logarithmic Scale on Y')
   if agreey:
     log_valuey = True
   else:
     log_valuey=False
   z_curve = st.selectbox('select the curve for Z-axis', well_df.columns)
-  scale_z_left = st.sidebar.number_input ('Left Scale Z-axis', value= well_df[z_curve].min())
-  scale_z_right = st.sidebar.number_input ('Right Scale Z-axis', value = well_df[z_curve].max())
+  scale_z_left = st.sidebar.number_input ('Bottom Scale Z-axis', value= well_df[z_curve].min())
+  scale_z_right = st.sidebar.number_input ('Upper Scale Z-axis', value = well_df[z_curve].max())
 
   fig=px.scatter(well_df, x=x_curve, y=y_curve,log_y=log_valuey,log_x = log_valuex,
                 color = z_curve, range_x=[scale_x_left, scale_x_right])
