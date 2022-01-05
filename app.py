@@ -548,11 +548,9 @@ if mode == 'Yes Please!':
     log_value_hist = True
   else:
     log_value_hist = False
-<<<<<<< HEAD
+
   fig = px.histogram(well_df, x=curve_hist, log_x = log_value_hist, range_x=[scale_hist_left, scale_hist_right])
-=======
-  fig = px.histogram(well_df, x=curve_hist, log_x = log_value_hist, range_x = [scale_hist_left, scale_hist_right])
->>>>>>> c61c1b4b312a4549d7b741ef1cfca05c7b6db510
+
   st.plotly_chart(fig)
   
   # Scatter Plot
