@@ -545,7 +545,7 @@ if mode == 'Yes Please!':
   st.title('Scatter Plot')
   st.sidebar.title('Scatter Plot')
   # well_df = well_df.drop('DEPTH', axis=1, inplace=False)
-  x_curve = st.sidebar.selectbox('select the curve for X-axis', well_df.columns)
+  x_curve = st.selectbox('select the curve for X-axis', well_df.columns)
   scale_x_left = st.sidebar.number_input ('Left Scale X-axis', value= well_df[x_curve].min())
   scale_x_right = st.sidebar.number_input ('Right Scale X-axis', value = well_df[x_curve].max())
   agreex = st.sidebar.checkbox('Logarithmic Scale on X')
@@ -553,7 +553,7 @@ if mode == 'Yes Please!':
     log_valuex = True
   else:
     log_valuex=False
-  y_curve = st.sidebar.selectbox('select the curve for Y-axis', well_df.columns)
+  y_curve = st.selectbox('select the curve for Y-axis', well_df.columns)
   scale_y_left = st.sidebar.number_input ('Left Scale Y-axis', value= well_df[y_curve].min())
   scale_y_right = st.sidebar.number_input ('Right Scale Y-axis', value = well_df[y_curve].max())
   agreey = st.sidebar.checkbox('Logarithmic Scale on Y')
@@ -561,7 +561,7 @@ if mode == 'Yes Please!':
     log_valuey = True
   else:
     log_valuey=False
-  z_curve = st.sidebar.selectbox('select the curve for Z-axis', well_df.columns)
+  z_curve = st.selectbox('select the curve for Z-axis', well_df.columns)
   scale_z_left = st.sidebar.number_input ('Left Scale Z-axis', value= well_df[z_curve].min())
   scale_z_right = st.sidebar.number_input ('Right Scale Z-axis', value = well_df[z_curve].max())
 
