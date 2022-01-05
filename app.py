@@ -569,3 +569,4 @@ if mode == 'Yes Please!':
                 color = z_curve, range_x=[scale_x_left, scale_x_right])
 
   st.plotly_chart(fig)
+
