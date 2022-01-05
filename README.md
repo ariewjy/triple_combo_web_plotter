@@ -46,6 +46,18 @@ In this tutorial, we will go step by step to create a decent plot based on the p
 
 <img width="979" alt="CleanShot 2022-01-04 at 17 41 04@2x" src="https://user-images.githubusercontent.com/73975333/148039931-cf4b4481-be48-4593-8cdf-fd32754b9644.png">
 
+5. You can do Volume of Shale calculation from Gamma Ray of Density Neutron. You can select porosity from Density, or Density-Neutron Combination
+
+![image](https://user-images.githubusercontent.com/73975333/148176161-75dfd7b7-c33e-48c4-ad15-3416dd67c80d.png)
+
+6. You can calculate Water Resistivity from Salinity, or use your own Rw and calculate the Water Saturation.
+![image](https://user-images.githubusercontent.com/73975333/148176252-879ad500-c72c-4228-8aba-880afc9f54e0.png)
+
+7. You can also plot histogram on each curve, or plotting two curves in a scatter plot. 
+![image](https://user-images.githubusercontent.com/73975333/148175865-94c984bc-ca94-4d82-b33c-5888f190cd68.png)
+
+![image](https://user-images.githubusercontent.com/73975333/148175885-3d2ca74e-7bba-44f9-9c70-8855167f478e.png)
+
 ### Enjoy and Have Fun!
 
 
