@@ -21,7 +21,7 @@ st.title('Welcome to Petrophysics Plotter!')
 st.text('Plot your LAS 2.0 file into a triple combo and/or formation evaluation plots.\n(c) 2021, Aditya Arie Wijaya\n=============================')
 st.text('Suggestions --> LinkedIn: www.linkedin.com/in/adityaariewijaya89')
 st.text('Documentation: https://github.com/ariewjy/triple_combo_web_plotter')
-st.text('It may take sometimes for the running process to finish, be patient and reload when stucked')
+st.text('Running Process may take longer, be patient and reload when stucked')
 
 st.title('LAS File Data')
 
