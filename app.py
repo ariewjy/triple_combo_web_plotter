@@ -11,6 +11,7 @@ from fpdf import FPDF
 import base64
 from tempfile import NamedTemporaryFile
 import tempfile
+import streamlit.components.v1 as components  # Import Streamlit
 # from pyxlsb import open_workbook as open_xlsb
 # from io import BytesIO
 
@@ -20,10 +21,13 @@ st.set_option('deprecation.showfileUploaderEncoding', False)
 
 st.title('Welcome to Petrophysics Plotter!')
 st.text('Plot your LAS 2.0 file into a triple combo and/or formation evaluation plots.\n(c) 2021, Aditya Arie Wijaya\n=============================')
-st.text('Suggestions --> LinkedIn: www.linkedin.com/in/adityaariewijaya89')
-st.text('Documentation: https://github.com/ariewjy/triple_combo_web_plotter')
-st.text('It may take sometimes for the running process to finish, be patient and reload when stucked')
+st.text('Reach me out --> LinkedIn: www.linkedin.com/in/adityaariewijaya89')
+# components.html("<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>")
+st.text('Source Code and Docs: https://github.com/ariewjy/triple_combo_web_plotter')
+st.write('Hi There! Thanks for visiting the website. \n If you want to support, do click the linked Ko-Fi button below. The money will be used to ensure the website is up and running. \n Appreciate your help!')
+components.html("<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#29abe0', 'D1D47YOTB');kofiwidget2.draw();</script>")
 
+# st.write('Please reload when stucked. Enjoy!')
 st.title('LAS File Data')
 
 mode = st.radio(
