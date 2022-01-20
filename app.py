@@ -10,8 +10,8 @@ import plotly.express as px
 from fpdf import FPDF
 import base64
 from tempfile import NamedTemporaryFile
+import tempfile
 import streamlit.components.v1 as components  # Import Streamlit
-
 # from pyxlsb import open_workbook as open_xlsb
 # from io import BytesIO
 
@@ -35,16 +35,23 @@ mode = st.radio(
     ('Upload File', 'Use Preloaded File')
 )
 
+
+
 if mode == 'Upload File':
     file = st.file_uploader('Upload the LAS file')
-    
+    if file is not None:
+      tfile = tempfile.NamedTemporaryFile(delete=False)
+      tfile.write(file.read())
+      las_file = lasio.read(tfile.name)
+      las_df=las_file.df()    
+
 if mode == 'Use Preloaded File':
     file = '42303347740000.las'
+    las_file = lasio.read(file)
+    las_df=las_file.df()    
+  
 
-
-if file:
-  las_file = lasio.read(file)
-  las_df=las_file.df()    
+if file:  
   las_df.insert(0, 'DEPTH', las_df.index)
   las_df.reset_index(drop=True, inplace=True) 
 
