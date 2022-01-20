@@ -1,3 +1,8 @@
+from argparse import FileType
+from operator import index
+from shutil import which
+from tracemalloc import start, stop
+from turtle import width
 from altair.vegalite.v4.api import value
 import lasio
 from numpy.core.fromnumeric import mean
@@ -11,7 +16,8 @@ from fpdf import FPDF
 import base64
 from tempfile import NamedTemporaryFile
 import tempfile
-import streamlit.components.v1 as components  # Import Streamlit
+import streamlit.components.v1 as components
+from zmq import CURVE_SERVER  # Import Streamlit
 # from pyxlsb import open_workbook as open_xlsb
 # from io import BytesIO
 
@@ -294,20 +300,17 @@ if file:
   st.pyplot(fig)
   
   #download feature
-  def create_download_link(val, filename):
-    b64 = base64.b64encode(val)  # val looks like b'...'
-    return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
-
-  export_as_pdf = st.button("Export Triple Combo Plot to PDF")
-
-  if export_as_pdf:
-    pdf = FPDF()
-    pdf.add_page()
-    with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-      fig.savefig(tmpfile.name)
-      pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*16))
-    html = create_download_link(pdf.output(dest="S").encode("latin-1"), f'{well_name} - Triple Combo')
-    st.markdown(html, unsafe_allow_html=True)
+  #exporting as pdf
+  pdf = FPDF()
+  pdf.add_page()
+  with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+    fig.savefig(tmpfile.name)
+    pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*16))
+  st.download_button(
+    "Download Triple Combo Plot as PDF",
+    data=pdf.output(dest='S').encode('latin-1'),
+    file_name=f"{well_name}_triple_combo.pdf",
+)
 
 st.title(' ')
 
@@ -529,23 +532,62 @@ if mode == 'Yes Please!':
   plt.show() 
   st.pyplot(fig)
 
+  #exporting as pdf
+  pdf = FPDF()
+  pdf.add_page()
+  with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+    fig.savefig(tmpfile.name)
+    pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*16))
+  st.download_button(
+    "Download Formation Evaluation Plot as PDF",
+    data=pdf.output(dest='S').encode('latin-1'),
+    file_name=f"{well_name}_formation_eval.pdf",
+)
+
   #download feature
-  def create_download_link(val, filename):
-    b64 = base64.b64encode(val)  # val looks like b'...'
-    return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
+  # def create_download_link(val, filename):
+  #   b64 = base64.b64encode(val)  # val looks like b'...'
+  #   return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
 
-  export_as_pdf = st.button("Export Formation Evaluation Plot to PDF")
+  # export_as_pdf = st.button("Export Formation Evaluation Plot to PDF")
 
-  if export_as_pdf:
-    pdf = FPDF()
-    pdf.add_page()
-    with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-      fig.savefig(tmpfile.name)
-      pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*16))
-    html = create_download_link(pdf.output(dest="S").encode("latin-1"), f'{well_name} - Form Eval')
-    st.markdown(html, unsafe_allow_html=True)
+
+
+  # if export_as_pdf:
+  #   pdf = FPDF()
+  #   pdf.add_page()
+  #   with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+  #     fig.savefig(tmpfile.name)
+  #     pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*16))
+  #   html = create_download_link(pdf.output(dest="S").encode("latin-1"), f'{well_name} - Form Eval')
+  #   st.markdown(html, unsafe_allow_html=True)
 
   # st.write(well_df)
+  top_index = int(well_df[well_df['DEPTH'] == top_depth].index.values)
+  bot_index = int(well_df[well_df['DEPTH'] == bot_depth].index.values)
+  
+  well_df = well_df.loc[top_index:bot_index]
+  # st.write(well_df)
+  st.title('Downloading Final Result as CSV')
+  st.markdown('**REMARKS**: _The CSV file will include input LAS data_ **AND** _Formation Evaluation Result: Volume of Shale (%), Porosity (dec), and Water Saturation (%) at the above depth interval_')
+
+  #exporting as CSV
+  @st.cache
+  def convert_df(df):
+    return df.to_csv().encode('utf-8')
+
+
+  csv = convert_df(well_df)
+
+  st.download_button(
+    "Download the Formation Evaluation CSV file",
+    csv,
+    f"{well_name}_formation_eval.csv",
+    "text/csv",
+    key='download-csv'
+  )
+
+  
 
   # Histogram
 
@@ -562,6 +604,8 @@ if mode == 'Yes Please!':
     log_value_hist = False
 
   fig = px.histogram(well_df, x=curve_hist, log_x = log_value_hist, range_x=[scale_hist_left, scale_hist_right])
+
+  # fig.update_layout(autosize=True)
 
   st.plotly_chart(fig)
   
