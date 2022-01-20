@@ -581,6 +581,8 @@ if mode == 'Yes Please!':
 
   st.plotly_chart(fig)
   
+
+  @st.cache
   pdf = FPDF()
   pdf.add_page()
   with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
@@ -623,7 +625,8 @@ if mode == 'Yes Please!':
                 color = z_curve, range_x=[scale_x_left, scale_x_right], range_y = [scale_y_bottom, scale_y_upper])
 
   st.plotly_chart(fig)
-
+  
+  @st.cache
   pdf = FPDF()
   pdf.add_page()
   with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
