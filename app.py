@@ -582,7 +582,7 @@ if mode == 'Yes Please!':
   st.plotly_chart(fig)
   
 
-  @st.cache
+#   @st.cache
   pdf = FPDF()
   pdf.add_page()
   with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
@@ -626,7 +626,7 @@ if mode == 'Yes Please!':
 
   st.plotly_chart(fig)
   
-  @st.cache
+#   @st.cache
   pdf = FPDF()
   pdf.add_page()
   with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
