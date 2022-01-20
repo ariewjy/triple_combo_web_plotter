@@ -579,10 +579,22 @@ if mode == 'Yes Please!':
 
   fig = px.histogram(well_df, x=curve_hist, log_x = log_value_hist, range_x=[scale_hist_left, scale_hist_right])
 
-
-
   st.plotly_chart(fig)
   
+  pdf = FPDF()
+  pdf.add_page()
+  with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+    fig.write_image(tmpfile.name)
+    pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*8))
+  st.download_button(
+    "Download Histogram as PDF",
+    data=pdf.output(dest='S').encode('latin-1'),
+    file_name=f"{well_name}_histogram_{curve_hist}.pdf",
+)
+
+
+
+
   # Scatter Plot
   st.title('Scatter Plot')
   st.sidebar.title('Scatter Plot')
@@ -611,4 +623,15 @@ if mode == 'Yes Please!':
                 color = z_curve, range_x=[scale_x_left, scale_x_right], range_y = [scale_y_bottom, scale_y_upper])
 
   st.plotly_chart(fig)
+
+  pdf = FPDF()
+  pdf.add_page()
+  with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+    fig.write_image(tmpfile.name)
+    pdf.image(tmpfile.name, 10, 10, (plot_w*16), (plot_h*8))
+  st.download_button(
+    "Download Scatter Plot as PDF",
+    data=pdf.output(dest='S').encode('latin-1'),
+    file_name=f"{well_name}_Crossplot_{x_curve}_{y_curve}_{z_curve}.pdf",
+)
 

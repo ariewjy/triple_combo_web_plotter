@@ -12,7 +12,7 @@ The website is available at __https://plotpetrophysics.xyz/__
 - Ability to calculate porosity (total or effective) from Density only or Density-Neutron combination (Crossplot).
 - Ability to calculate water saturation (Sw) using Archie's equation. 
 - Ability to plot data in a form of Histogram and Scatter Plot.
-- Ability to download all plots in a pdf format. 
+- Ability to download all plots/histogram/scatterplot in a pdf format. 
 - Ability to export the final data (Original LAS data + Formation Evaluation data: VSH, POROSITY, SW)
 
 ## Some Limitations:
