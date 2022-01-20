@@ -18,7 +18,7 @@ The website is available at __https://plotpetrophysics.xyz/__
 ## Some Limitations:
 - Only accepting LAS file 2.0.
 - Limited bandwith, make sure to select and adjust one feature at a time.
-- The website is not having ssl certificate _(the "not secure" warning on your browser tab)_. __Dont worry about this, as I don't collect any private information whatsoever.__
+- Make sure to access the website via __https://plotpetrophysics.xyz/__ to access the secured website with SSL certificate. Otherwise, you can still access it via __plotpetrophysics.xyz__ or __www.plotpetrophysics.xyz__ but with no ssl certificate. I am working on making all reroute to https server. Thanks for understanding!
 
 ## Exciting Future Plans (_ranked from the easiest_):
 - Adding zonation/ top formation to the plot.
