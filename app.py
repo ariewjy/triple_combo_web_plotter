@@ -167,7 +167,7 @@ if file:
     neu_left = st.sidebar.number_input('Neutron Left Scale', min_value=-50.00, value=45.00)
     neu_right = st.sidebar.number_input('Neutron Right Scale', min_value=-50.00, value=-15.00)
 
-  den_neu_div = st.sidebar.radio('Number of Division:',[5,6])
+  den_neu_div = st.sidebar.radio('Number of Division:',[4,5])
   dn_xover = st.sidebar.radio('D-N Colour',['yellow','gold','none'])
   dn_sep = st.sidebar.radio('N-D Colour',['lightgray','green', 'none'])
 
@@ -247,7 +247,7 @@ if file:
   ax3.tick_params(axis='x', colors=den_color)
   ax3.spines["top"].set_edgecolor(den_color)
   ax3.spines["top"].set_position(("axes", 1.02))
-  ax3.set_xticks(list(np.linspace(den_left, den_right, num = den_neu_div)))
+  ax3.set_xticks(list(np.linspace(den_left, den_right, num = (den_neu_div+1))))
 
   ax3.grid(which='major', color='lightgrey', linestyle='-')
   ax3.xaxis.set_ticks_position("top")
@@ -263,7 +263,7 @@ if file:
   ax4.spines["top"].set_position(("axes", 1.08))
   ax4.spines["top"].set_visible(True)
   ax4.spines["top"].set_edgecolor(neu_color)
-  ax4.set_xticks(list(np.linspace(neu_left, neu_right, num = den_neu_div)))
+  ax4.set_xticks(list(np.linspace(neu_left, neu_right, num = (den_neu_div+1))))
 
   #shading between density and neutron
   x1=den_log
