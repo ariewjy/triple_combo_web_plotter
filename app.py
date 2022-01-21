@@ -536,11 +536,11 @@ if mode == 'Yes Please!':
     file_name=f"{well_name}_formation_eval.pdf",
 )
 
+  well_df= well_df.query(f"`DEPTH` >= {top_depth} and `DEPTH` <= {bot_depth}")
+  st.markdown('**Final Result, Expand to See Full Data.**')
+  st.text('VSH, TPOR, EPOR, and SW are in the Last Right 4 Columns')
+  st.write (well_df)
 
-  top_index = int(well_df[well_df['DEPTH'] == top_depth].index.values)
-  bot_index = int(well_df[well_df['DEPTH'] == bot_depth].index.values)
-  
-  well_df = well_df.loc[top_index:bot_index]
 
   st.title('Downloading Final Result as CSV')
   st.markdown('**REMARKS**: _The CSV file will include input LAS data_ **AND** _Formation Evaluation Result: Volume of Shale (%), Porosity (dec), and Water Saturation (%) at the above depth interval_')
