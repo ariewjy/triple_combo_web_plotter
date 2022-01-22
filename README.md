@@ -2,7 +2,7 @@
 
 ## This is a documentation of online website to plot LAS file data into a triple combo plot and formation evaluation plot.
 
-The website is available at __https://plotpetrophysics.xyz/__ 
+The website is available at __www.plotpetrophysics.xyz__ or __https://plotpetrophysics.xyz/__ (for SSL certificated website)
 
 ## Features:
 - Adjustable depth, color, and curve-shading.
