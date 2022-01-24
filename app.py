@@ -41,7 +41,8 @@ if mode == 'Upload File':
       tfile = tempfile.NamedTemporaryFile(delete=False)
       tfile.write(file.read())
       las_file = lasio.read(tfile.name)
-      las_df=las_file.df()    
+      las_df=las_file.df()
+      formation_eval_mode = True    
 
 if mode == 'Use Preloaded File':
     file = '42303347740000.las'
@@ -51,13 +52,11 @@ if mode == 'Use Preloaded File':
 
 if file:  
   las_df.insert(0, 'DEPTH', las_df.index)
-  las_df.reset_index(drop=True, inplace=True) 
-
-  
+  las_df.reset_index(drop=True, inplace=True)   
 
   well_name =  las_file.header['Well'].WELL.value
-  start_depth =  las_file.header['Well'].STRT.value
-  stop_depth =  las_file.header['Well'].STOP.value
+  start_depth = las_df['DEPTH'].min()
+  stop_depth = las_df['DEPTH'].max()
   company_name =  las_file.header['Well'].COMP.value
   date =  las_file.header['Well'].DATE.value
   curvename = las_file.curves
@@ -179,6 +178,21 @@ if file:
   fig, ax = plt.subplots(figsize=(plot_w,plot_h))
   fig.suptitle(f"Triple Combo Plot\n===================\nWell: {well_name}\n(Interval: {top_depth} - {bot_depth})\n===================\n ---(c) Aditya Arie Wijaya,2021---\nhttps://github.com/ariewjy\n===================",
               size=title_size, y=title_height)
+  
+  
+  
+#   table = st.markdown(
+#     """
+# | Rw =  | Rw =  | Rw =  | Rw =  |   |   |   |   |   |   |
+# |-------|-------|-------|-------|---|---|---|---|---|---|
+# | Rw =  | Rw =  | Rw =  | Rw =  |   |   |   |   |   |   |
+# | Rw =  | Rw =  | Rw =  | Rw =  |   |   |   |   |   |   |
+# |-------|-------|-------|-------|---|---|---|---|---|---|
+
+# """
+# )
+
+#   fig.suptitle(f"Table of Data: {table}")
 
   gr_log=las_df[curve_list[0]]
   res_log=las_df[curve_list[1]]
@@ -202,6 +216,7 @@ if file:
   # Gamma Ray track
   ax1.plot(gr_log, "DEPTH", data = well_df, color = gr_color, lw=line_width)
   ax1.set_xlabel(gr_trackname)
+  ax1.minorticks_on()
   ax1.set_xlim(gr_left, gr_right)
   ax1.set_ylim(bot_depth, top_depth)
   ax1.xaxis.label.set_color(gr_color)
@@ -210,7 +225,8 @@ if file:
   ax1.spines["top"].set_position(("axes", 1.02))
   ax1.set_xticks(list(np.linspace(gr_left, gr_right, num = gr_div)))
 
-  ax1.grid(which='major', color='lightgrey', linestyle='-')
+  ax1.grid(which='major', color='silver', linestyle='-')
+  ax1.grid(which='minor', color='lightgrey', linestyle=':', axis='y')
   ax1.xaxis.set_ticks_position("top")
   ax1.xaxis.set_label_position("top")
 
@@ -231,7 +247,8 @@ if file:
   ax2.spines["top"].set_edgecolor(res_color)
   ax2.spines["top"].set_position(("axes", 1.02))
 
-  ax2.grid(which='major', color='lightgrey', linestyle='-')
+  ax2.grid(which='major', color='silver', linestyle='-')
+  ax2.grid(which='minor', color='lightgrey', linestyle=':', axis='y')
   ax2.xaxis.set_ticks_position("top")
   ax2.xaxis.set_label_position("top")
 
@@ -241,6 +258,7 @@ if file:
   # Density track
   ax3.plot(den_log, "DEPTH", data = well_df, color = den_color, lw=line_width)
   ax3.set_xlabel(den_trackname)
+  ax3.minorticks_on()
   ax3.set_xlim(den_left, den_right)
   ax3.set_ylim(bot_depth, top_depth)
   ax3.xaxis.label.set_color(den_color)
@@ -249,7 +267,8 @@ if file:
   ax3.spines["top"].set_position(("axes", 1.02))
   ax3.set_xticks(list(np.linspace(den_left, den_right, num = (den_neu_div+1))))
 
-  ax3.grid(which='major', color='lightgrey', linestyle='-')
+  ax3.grid(which='major', color='silver', linestyle='-')
+  ax3.grid(which='minor', color='lightgrey', linestyle=':', axis='y')
   ax3.xaxis.set_ticks_position("top")
   ax3.xaxis.set_label_position("top")
 
@@ -277,22 +296,16 @@ if file:
   ax3.fill_betweenx(well_df['DEPTH'], x1, nz, where=x1>=nz, interpolate=True, color=dn_sep, linewidth=0)
   ax3.fill_betweenx(well_df['DEPTH'], x1, nz, where=x1<=nz, interpolate=True, color=dn_xover, linewidth=0)
 
-
-  #end
       
-
   plt.tight_layout()
 
-  # if savepdf is True:
-  # pdf.add_image(temp_file.name)
-  # file = plt.savefig((f"{well_name}_triple_combo_plot.pdf"), dpi=150, bbox_inches='tight')
-  # st.download_button(label='Download Plot as PDF',data= file)
 
   plt.show() 
   st.pyplot(fig)
   
   #download feature
   #exporting as pdf
+
   pdf = FPDF()
   pdf.add_page()
   with NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
@@ -308,10 +321,11 @@ st.title(' ')
 
 
 ####### VSH-------------...
-mode = st.radio(
-    "Activate Formation Evaluation Module?",
-    ('Not Now', 'Yes Please!')
-)
+if file is not None:
+  mode = st.radio(
+      "Activate Formation Evaluation Module?",
+      ('Not Now', 'Yes Please!')
+  )
 
 if mode == 'Yes Please!':
 
@@ -403,8 +417,9 @@ if mode == 'Yes Please!':
   well_df['TPOR'] = tpor_log
   well_df['EPOR'] = epor_log
 
-  por_left = st.sidebar.number_input('Left Scale', min_value=0, max_value=100, value=50, step=10)
+  por_left = st.sidebar.number_input('Left Scale', min_value=0, max_value=100, value=35, step=10)
   por_right = st.sidebar.number_input('Right Scale', min_value=0, max_value=100, value=0, step=10)
+  por_grid = st.sidebar.number_input('Number of Grids', min_value = 0, value=8, step =1)
   por_color = 'black'
   por_shading = st.sidebar.radio('Total Porosity Shading',['aqua','none'])
   # sand_shading = st.sidebar.radio('Sand Shading',['gold','yellow'])
@@ -463,6 +478,7 @@ if mode == 'Yes Please!':
   # Vsh track
   ax1.plot(vsh_log, "DEPTH", data = well_df, color = vsh_color, lw=line_width)
   ax1.set_xlabel(vsh_trackname)
+  ax1.minorticks_on()
   ax1.set_xlim(0, 100)
   ax1.set_ylim(bot_depth, top_depth)
   ax1.xaxis.label.set_color(vsh_color)
@@ -471,38 +487,42 @@ if mode == 'Yes Please!':
   ax1.spines["top"].set_position(("axes", 1.02))
   ax1.set_xticks(list(np.linspace(0, 100, num = 5)))
 
-  ax1.grid(which='major', color='lightgrey', linestyle='-')
+  ax1.grid(which='major', color='grey', linestyle='--')
+  ax1.grid(which='minor', color='lightgrey', linestyle='-.', axis='y')
   ax1.xaxis.set_ticks_position("top")
   ax1.xaxis.set_label_position("top")
 
   ##area-fill sand and shale for VSH
-  ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=False, color = shale_shading, linewidth=0)
-  ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = sand_shading, linewidth=0)
+  ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=False, color = shale_shading, linewidth=0, alpha=0.8)
+  ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = sand_shading, linewidth=0, alpha=0.8)
 
 
   # Porosity track
   ax2.plot(por_log, "DEPTH", data = well_df, color = por_color, lw=line_width)
   ax2.set_xlabel(por_trackname)
+  ax2.minorticks_on()
   ax2.set_xlim(por_left, por_right)
   ax2.set_ylim(bot_depth, top_depth)
   ax2.xaxis.label.set_color(por_color)
   ax2.tick_params(axis='x', colors=por_color)
   ax2.spines["top"].set_edgecolor(por_color)
   ax2.spines["top"].set_position(("axes", 1.02))
-  ax2.set_xticks(list(np.linspace(por_left, por_right, num = 6)))
+  ax2.set_xticks(list(np.linspace(por_left, por_right, num = por_grid)))
 
-  ax2.grid(which='major', color='lightgrey', linestyle='-')
+  ax2.grid(which='major', color='grey', linestyle='--')
+  ax2.grid(which='minor', color='lightgrey', linestyle='-.', axis='y')
   ax2.xaxis.set_ticks_position("top")
   ax2.xaxis.set_label_position("top")
 
   ##area-fill tpor and epor
-  ax2.fill_betweenx(well_df['DEPTH'], por_log, 0, interpolate=True, color = por_shading, linewidth=0)
+  ax2.fill_betweenx(well_df['DEPTH'], por_log, 0, interpolate=True, color = por_shading, linewidth=0, alpha=0.8)
   # ax2.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=True, color = sand_shading, linewidth=0)
 
 
   # Sw track
   ax3.plot(sw_log, "DEPTH", data = well_df, color = sw_color, lw=line_width)
   ax3.set_xlabel(sw_trackname)
+  ax3.minorticks_on()
   ax3.set_xlim(sw_left, sw_right)
   ax3.set_ylim(bot_depth, top_depth)
   ax3.xaxis.label.set_color(sw_color)
@@ -511,13 +531,14 @@ if mode == 'Yes Please!':
   ax3.spines["top"].set_position(("axes", 1.02))
   ax3.set_xticks(list(np.linspace(sw_left, sw_right, num = 6)))
 
-  ax3.grid(which='major', color='lightgrey', linestyle='-')
+  ax3.grid(which='major', color='grey', linestyle='--')
+  ax3.grid(which='minor', color='lightgrey', linestyle='-.', axis='y')
   ax3.xaxis.set_ticks_position("top")
   ax3.xaxis.set_label_position("top")
 
   ##area-fill sw
-  ax3.fill_betweenx(well_df['DEPTH'], 100, sw_log, interpolate=True, color = hc_shading, linewidth=0)
-  ax3.fill_betweenx(well_df['DEPTH'], sw_log, 0, interpolate=True, color = 'lightblue', linewidth=0)
+  ax3.fill_betweenx(well_df['DEPTH'], 100, sw_log, interpolate=True, color = hc_shading, linewidth=0, alpha=0.8)
+  ax3.fill_betweenx(well_df['DEPTH'], sw_log, 0, interpolate=True, color = 'lightblue', linewidth=0, alpha=0.8)
 
   plt.tight_layout()
 
