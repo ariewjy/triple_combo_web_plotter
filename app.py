@@ -22,7 +22,9 @@ st.text('Plot your LAS 2.0 file into a triple combo and/or formation evaluation 
 st.text('Reach me out --> LinkedIn: www.linkedin.com/in/adityaariewijaya89')
 # components.html("<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>")
 st.text('Source Code and Docs: https://github.com/ariewjy/triple_combo_web_plotter')
-st.write('Hi There! Thanks for visiting the website. \n If you want to support, do click the linked Ko-Fi button below. The money will be used to ensure the website is up and running. \n Appreciate your help!')
+st.markdown('**Thanks for visiting the website!**')
+st.markdown('If you are getting value from this web-app, please consider donating (_link Ko-Fi below_)')
+st.markdown('**Appreciate your help!**')
 components.html("<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#29abe0', 'D1D47YOTB');kofiwidget2.draw();</script>")
 
 # st.write('Please reload when stucked. Enjoy!')
