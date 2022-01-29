@@ -443,7 +443,7 @@ if formevalmode:
   hc_shading = st.sidebar.radio('Hydrocarbon Shading',['lime','coral'])
   well_df['SW'] = sw_log
 
-  
+  st.sidebar.title('Pay Flag')
   pay_flag = st.sidebar.checkbox('Pay Flag')
   if pay_flag:
     # vsh_cutoff = st.sidebar.number_input('VSH Cutoff', value = 0.75, step = 0.05)
