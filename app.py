@@ -543,7 +543,7 @@ if formevalmode:
     ax4.spines["top"].set_visible(True)
     ax4.spines["top"].set_edgecolor('black')
     ax4.set_xticks(list(np.linspace(1, 0, num = 2)))
-    ax4.fill_betweenx(well_df['DEPTH'], coal_index, 0, interpolate=True, color = 'black', linewidth=0.0)
+    ax4.fill_betweenx(well_df['DEPTH'], coal_index, 0, interpolate=True, color = 'black', linewidth=0.0, alpha = 0.7)
 
 
   # Sw track
@@ -572,14 +572,14 @@ if formevalmode:
     ax5.set_xlabel('PAY FLAG')
     ax5.minorticks_on()
     ax5.xaxis.label.set_color('red')
-    ax5.set_xlim(5, 0)
+    ax5.set_xlim(10, 0)
     ax5.set_ylim(bot_depth, top_depth)
     ax5.tick_params(axis='x', colors='black')
     ax5.spines["top"].set_position(("axes", 1.08))
     ax5.spines["top"].set_visible(True)
     ax5.spines["top"].set_edgecolor('black')
-    ax5.set_xticks(list(np.linspace(5, 0, num = 2)))
-    ax5.fill_betweenx(well_df['DEPTH'], pay_index, 0, interpolate=True, color = 'red', linewidth=0.0)
+    ax5.set_xticks(list(np.linspace(10, 0, num = 2)))
+    ax5.fill_betweenx(well_df['DEPTH'], pay_index, 0, interpolate=True, color = 'red', linewidth=0.0, alpha = 0.7)
 
   plt.tight_layout()
 
