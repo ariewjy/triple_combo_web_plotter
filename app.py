@@ -1,5 +1,7 @@
 
+from cmath import nan
 import lasio
+import pathlib 
 from numpy.core.fromnumeric import mean
 import streamlit as st
 import pandas as pd
@@ -35,8 +37,6 @@ mode = st.radio(
     ('Upload File', 'Use Preloaded File')
 )
 
-
-
 if mode == 'Upload File':
     file = st.file_uploader('Upload the LAS file')
     if file is not None:
@@ -44,7 +44,7 @@ if mode == 'Upload File':
       tfile.write(file.read())
       las_file = lasio.read(tfile.name)
       las_df=las_file.df()
-      formation_eval_mode = True    
+      
 
 if mode == 'Use Preloaded File':
     file = '42303347740000.las'
@@ -181,20 +181,6 @@ if file:
   fig.suptitle(f"Triple Combo Plot\n===================\nWell: {well_name}\n(Interval: {top_depth} - {bot_depth})\n===================\n ---(c) Aditya Arie Wijaya,2021---\nhttps://github.com/ariewjy\n===================",
               size=title_size, y=title_height)
   
-  
-  
-#   table = st.markdown(
-#     """
-# | Rw =  | Rw =  | Rw =  | Rw =  |   |   |   |   |   |   |
-# |-------|-------|-------|-------|---|---|---|---|---|---|
-# | Rw =  | Rw =  | Rw =  | Rw =  |   |   |   |   |   |   |
-# | Rw =  | Rw =  | Rw =  | Rw =  |   |   |   |   |   |   |
-# |-------|-------|-------|-------|---|---|---|---|---|---|
-
-# """
-# )
-
-#   fig.suptitle(f"Table of Data: {table}")
 
   gr_log=las_df[curve_list[0]]
   res_log=las_df[curve_list[1]]
@@ -260,7 +246,7 @@ if file:
   # Density track
   ax3.plot(den_log, "DEPTH", data = well_df, color = den_color, lw=line_width)
   ax3.set_xlabel(den_trackname)
-  ax3.minorticks_on()
+  # ax3.minorticks_on()
   ax3.set_xlim(den_left, den_right)
   ax3.set_ylim(bot_depth, top_depth)
   ax3.xaxis.label.set_color(den_color)
@@ -277,6 +263,7 @@ if file:
   # Neutron trak placed ontop of density track
   ax4.plot(neu_log, "DEPTH", data = well_df, color = neu_color, lw=line_width)
   ax4.set_xlabel(neu_trackname)
+  ax4.minorticks_on()
   ax4.xaxis.label.set_color(neu_color)
   ax4.set_xlim(neu_left, neu_right)
   ax4.set_ylim(bot_depth, top_depth)
@@ -298,7 +285,6 @@ if file:
   ax3.fill_betweenx(well_df['DEPTH'], x1, nz, where=x1>=nz, interpolate=True, color=dn_sep, linewidth=0, alpha=0.8)
   ax3.fill_betweenx(well_df['DEPTH'], x1, nz, where=x1<=nz, interpolate=True, color=dn_xover, linewidth=0, alpha=0.8)
 
-      
   plt.tight_layout()
 
 
@@ -323,14 +309,10 @@ st.title(' ')
 
 
 ####### VSH-------------...
-if file is not None:
-  mode = st.radio(
-      "Activate Formation Evaluation Module?",
-      ('Not Now', 'Yes Please!')
-  )
+# if file is not None:
+formevalmode = st.checkbox("Formation Evaluation Module")
 
-if mode == 'Yes Please!':
-
+if formevalmode:
   st.title('Formation Evaluation')
 
   #sidebar-vsh
@@ -362,7 +344,7 @@ if mode == 'Yes Please!':
     dphi_shale = np.clip(dphi_shale, 0, 1)
     neu_shale = st.sidebar.number_input('Neutron at 100% Shale', min_value=0.0, value=0.35, step=0.1)
     neu_mean = neu_log.mean()
-    # st.write(neu_mean)
+    
     
 
     vsh_log = (neu_log - dphi)/(neu_shale-dphi_shale) *100
@@ -370,11 +352,23 @@ if mode == 'Yes Please!':
     vsh_color = 'black'
     well_df['VSH'] = vsh_log
 
-    
   shale_shading = st.sidebar.radio('Shale Shading',['green','gray'])
-  sand_shading = st.sidebar.radio('Sand/Carbonate Shading',['gold','royalblue'])
+  sand_shading = st.sidebar.radio('Sand/Carbonate Shading',['gold','cornflowerblue'])
 
   vsh_trackname = f'Vshale {mode} (%)\n'
+
+  st.sidebar.title('Coal Flag')
+  coal_flag = st.sidebar.checkbox('Coal Flag?')
+  if coal_flag:
+    neu_coal = st.sidebar.number_input('Neutron Coal', value = 0.25, step = 0.05)
+    den_coal = st.sidebar.number_input('Density Coal', value = 2.00, step = 0.05)
+  
+    coal_index = np.where((neu_log>=neu_coal) & (den_log<=den_coal), 1, 0)
+  else: 
+    coal_index = np.nan
+
+  well_df['COAL'] = coal_index
+  
 
     #sidebar-porosity
   st.sidebar.title('Porosity')
@@ -386,27 +380,28 @@ if mode == 'Yes Please!':
     density_mat = st.sidebar.number_input('Matrix Density', min_value=1.0, value=2.65, step=0.1)
     density_fluid = st.sidebar.number_input('Fluid Density', min_value=0.0, value=1.0, max_value=1.5, step=0.1)
     dphi_log = (density_mat - den_log)/(density_mat-density_fluid)
-    # dphi_left = st.sidebar.number_input('Left DPHI Scale', min_value=0.0, max_value=1.0, value=0.5, step=0.1)
-    # dphi_right = st.sidebar.number_input('Right DPHI Scale', min_value=0.0, max_value=1.0, value=0.0, step=0.1)
-    # dphi_color = 'black'
+    
     tpor_log = dphi_log  
     tpor_log = np.clip(tpor_log, 0.001, 1)
+    tpor_log = np.where((coal_index ==1), 0.001, tpor_log)
     epor_log = tpor_log*(1-vsh_log/100)
     epor_log = np.clip(epor_log, 0.001, 1)
+    epor_log = np.where((coal_index ==1), 0.001, epor_log)
 
   if mode == 'Density-Neutron':
     density_mat = st.sidebar.number_input('Matrix Density', min_value=1.0, value=2.65, step=0.1)
     density_fluid = st.sidebar.number_input('Fluid Density', min_value=0.0, value=1.0, max_value=1.5, step=0.1)
     dphi_log = (density_mat - den_log)/(density_mat-density_fluid)
     dnphi_log = ((dphi_log**2 + neu_log**2)/2)**0.5
-    # dphi_left = st.sidebar.number_input('Left DPHI Scale', min_value=0.0, max_value=1.0, value=0.5, step=0.1)
-    # dphi_right = st.sidebar.number_input('Right DPHI Scale', min_value=0.0, max_value=1.0, value=0.0, step=0.1)
-    # dphi_color = 'black'
+    
     tpor_log = dnphi_log
     tpor_log = np.clip(tpor_log, 0.001, 1)
+    tpor_log = np.where((coal_index ==1), 0.001, tpor_log)
     epor_log = tpor_log*(1-vsh_log/100)
     epor_log = np.clip(epor_log, 0.001, 1)
-
+    epor_log = np.where((coal_index ==1), 0.001, epor_log)
+  
+  
   mode = st.sidebar.radio(
     "Porosity to Display",
     ('Effective Porosity', 'Total Porosity')
@@ -430,11 +425,8 @@ if mode == 'Yes Please!':
 
   #sidebar-Sw
   st.sidebar.title('Water Saturation')
-  mode = st.sidebar.radio(
-    "Calculate Rw from Salinity and Temp",
-    ('No, I have my own Rw', 'Yes, Please!')
-  )
-  if mode == 'Yes, Please!':
+  rw_input = st.sidebar.checkbox("Input Rw")
+  if rw_input:
     water_sal = st.sidebar.number_input ('Input Salinity in NaCl ppm', min_value=0, value =25000)
     fm_temp = st.sidebar.number_input('Formation Temperature in Fahrenheit', min_value=10, value = 75)
     rw_calc = (400000 / fm_temp / water_sal) ** 0.88
@@ -443,15 +435,27 @@ if mode == 'Yes Please!':
   a_value = st.sidebar.number_input('Turtuosity Factor (a)', min_value=0.0, value=1.0, max_value=10.0, step=0.1)
   m_value = st.sidebar.number_input('Porosity Exponent (m)', min_value=0.0, value=2.0, max_value=10.0, step=0.1)
   n_value = st.sidebar.number_input('Saturation Exponent (n)', min_value=0.0, value=2.0, max_value=10.0, step=0.1)
-  # atas = rw/res_log
-  # bawah = por_log**m_value
-  # sw_log = (atas/bawah)**(1/n_value)
+    
   por_input = por_log/100
   sw_log = (rw/(res_log*por_input**m_value))**(a_value/n_value)*100
   sw_log = np.clip(sw_log, 0, 100)
   sw_color = 'black'
   hc_shading = st.sidebar.radio('Hydrocarbon Shading',['lime','coral'])
   well_df['SW'] = sw_log
+
+  
+  pay_flag = st.sidebar.checkbox('Pay Flag')
+  if pay_flag:
+    # vsh_cutoff = st.sidebar.number_input('VSH Cutoff', value = 0.75, step = 0.05)
+    epor_cutoff = st.sidebar.number_input('EPOR Cutoff', value = 0.1, step = 0.05)
+    sw_cutoff = st.sidebar.number_input('SW Cutoff', value = 80, step = 5)
+  
+    pay_index = np.where((epor_log>epor_cutoff) & (sw_log<sw_cutoff), 1, 0)
+  else: 
+    pay_index = np.nan
+
+  well_df['PAY'] = pay_index
+    
 
   # shale_shading = st.sidebar.radio('Shale Shading',['green','gray'])
   # sand_shading = st.sidebar.radio('Sand Shading',['gold','yellow'])
@@ -467,8 +471,10 @@ if mode == 'Yes Please!':
   ax1 = plt.subplot2grid((1,3), (0,0), rowspan=1, colspan = 1)
   ax2 = plt.subplot2grid((1,3), (0,1), rowspan=1, colspan = 1)
   ax3 = plt.subplot2grid((1,3), (0,2), rowspan=1, colspan = 1)
-  # ax4 = ax3.twiny() #Twins the y-axis for the density track with the neutron track
-
+  if coal_flag:
+    ax4 = ax1.twiny() #Twins the y-axis for the density track with the neutron track
+  if pay_flag:
+    ax5 = ax3.twiny()
   #adding top border
   ax7 = ax1.twiny()
   ax7.xaxis.set_visible(False)
@@ -495,8 +501,12 @@ if mode == 'Yes Please!':
   ax1.xaxis.set_label_position("top")
 
   ##area-fill sand and shale for VSH
-  ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=False, color = shale_shading, linewidth=0, alpha=0.8)
-  ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = sand_shading, linewidth=0, alpha=0.8)
+  ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=False, color = shale_shading, linewidth=0, alpha=0.8, hatch = '- - -')
+  if sand_shading is 'cornflowerblue':
+    ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = sand_shading, linewidth=0, alpha=0.8, hatch = 'H-')
+  else:
+    ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = sand_shading, linewidth=0, alpha=0.9, hatch = '.__._')
+  
 
 
   # Porosity track
@@ -509,7 +519,7 @@ if mode == 'Yes Please!':
   ax2.tick_params(axis='x', colors=por_color)
   ax2.spines["top"].set_edgecolor(por_color)
   ax2.spines["top"].set_position(("axes", 1.02))
-  ax2.set_xticks(list(np.linspace(por_left, por_right, num = por_grid)))
+  ax2.set_xticks(list(np.linspace(por_left, por_right, num = int(por_grid))))
 
   ax2.grid(which='major', color='grey', linestyle='--')
   ax2.grid(which='minor', color='lightgrey', linestyle='-.', axis='y')
@@ -519,6 +529,21 @@ if mode == 'Yes Please!':
   ##area-fill tpor and epor
   ax2.fill_betweenx(well_df['DEPTH'], por_log, 0, interpolate=True, color = por_shading, linewidth=0, alpha=0.8)
   # ax2.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=True, color = sand_shading, linewidth=0)
+  
+  #coal track
+  if coal_flag:
+    ax4.plot(coal_index, "DEPTH", data = well_df, color = 'black', lw=2)
+    ax4.set_xlabel('COAL')
+    ax4.minorticks_on()
+    ax4.xaxis.label.set_color('black')
+    ax4.set_xlim(1, 0)
+    ax4.set_ylim(bot_depth, top_depth)
+    ax4.tick_params(axis='x', colors='black')
+    ax4.spines["top"].set_position(("axes", 1.08))
+    ax4.spines["top"].set_visible(True)
+    ax4.spines["top"].set_edgecolor('black')
+    ax4.set_xticks(list(np.linspace(1, 0, num = 2)))
+    ax4.fill_betweenx(well_df['DEPTH'], coal_index, 0, interpolate=True, color = 'black', linewidth=0.0, alpha = 0.7)
 
 
   # Sw track
@@ -541,6 +566,20 @@ if mode == 'Yes Please!':
   ##area-fill sw
   ax3.fill_betweenx(well_df['DEPTH'], 100, sw_log, interpolate=True, color = hc_shading, linewidth=0, alpha=0.8)
   ax3.fill_betweenx(well_df['DEPTH'], sw_log, 0, interpolate=True, color = 'lightblue', linewidth=0, alpha=0.8)
+
+  if pay_flag:
+    ax5.plot(pay_index, "DEPTH", data = well_df, color = 'red', lw=2)
+    ax5.set_xlabel('PAY FLAG')
+    ax5.minorticks_on()
+    ax5.xaxis.label.set_color('red')
+    ax5.set_xlim(10, 0)
+    ax5.set_ylim(bot_depth, top_depth)
+    ax5.tick_params(axis='x', colors='black')
+    ax5.spines["top"].set_position(("axes", 1.08))
+    ax5.spines["top"].set_visible(True)
+    ax5.spines["top"].set_edgecolor('black')
+    ax5.set_xticks(list(np.linspace(10, 0, num = 2)))
+    ax5.fill_betweenx(well_df['DEPTH'], pay_index, 0, interpolate=True, color = 'red', linewidth=0.0, alpha = 0.7)
 
   plt.tight_layout()
 
@@ -583,8 +622,6 @@ if mode == 'Yes Please!':
     "text/csv",
     key='download-csv'
   )
-
-  
 
   # Histogram
 
@@ -641,11 +678,12 @@ if mode == 'Yes Please!':
   else:
     log_valuey=False
   z_curve = st.selectbox('select the curve for Z-axis', well_df.columns)
-  scale_z_left = st.sidebar.number_input ('Bottom Scale Z-axis', value= well_df[z_curve].min())
-  scale_z_right = st.sidebar.number_input ('Upper Scale Z-axis', value = well_df[z_curve].max())
+  scale_z_left = st.sidebar.number_input ('Bottom Scale Z-axis', value= 0)
+  scale_z_right = st.sidebar.number_input ('Upper Scale Z-axis', value = 100)
 
   fig=px.scatter(well_df, x=x_curve, y=y_curve,log_y=log_valuey,log_x = log_valuex,
-                color = z_curve, range_x=[scale_x_left, scale_x_right], range_y = [scale_y_bottom, scale_y_upper])
+                color = z_curve, range_x=[scale_x_left, scale_x_right], range_y = [scale_y_bottom, scale_y_upper],
+                color_continuous_scale=px.colors.sequential.Aggrnyl_r)
 
   st.plotly_chart(fig)
   
