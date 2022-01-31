@@ -22,10 +22,11 @@ The website is available at __www.plotpetrophysics.xyz__ or __https://plotpetrop
 - Limited bandwith, make sure to select and adjust one feature at a time.
 - Make sure to access the website via __https://plotpetrophysics.xyz/__ to access the secured website with SSL certificate. Otherwise, you can still access it via __plotpetrophysics.xyz__ or __www.plotpetrophysics.xyz__ but with no ssl certificate. I am working on making all reroute to https server. Thanks for understanding!
 
-## Exciting Future Plans (_ranked from the easiest_):
+## Exciting Future Plans:
+- Adding ability to adjust the plot size, in order to facilitate longer vertical log-type pdf file.
 - Adding zonation/ top formation to the plot.
 - Adding integrated plot where Triple Combo and Formation Evaluation tracks is available in a single plot.
-- Adding ability to adjust the plot size, in order to facilitate longer vertical log-type pdf file.
+
 
 ## Tutorial:
 In this tutorial, we will go step by step to create a decent plot based on the preloaded file:
