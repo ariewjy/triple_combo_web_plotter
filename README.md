@@ -6,6 +6,7 @@ The website is available at __www.plotpetrophysics.xyz__ or __https://plotpetrop
 
 ## Features:
 - Adjustable depth, color, and curve-shading.
+- Shading for shales, carbonate, and sandstone are using geological symbol
 - A built in example from pre-loaded LAS file.
 - Ability to calculate Rw from Salinity and Temperature.
 - Ability to calculate VSH from Gamma-Ray or Density-Neutron logs.
