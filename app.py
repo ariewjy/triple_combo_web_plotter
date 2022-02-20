@@ -7,13 +7,18 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+import seaborn as sns    
 import plotly.express as px
 from fpdf import FPDF
 from tempfile import NamedTemporaryFile
 import tempfile
 import streamlit.components.v1 as components
+import striplog
+from striplog import Legend, Lexicon, Interval, Component, Decor
 
+litho='b'
+limestone_strip = Decor({'component': Component({'hatch':litho}), 'hatch': litho, 'colour': '#eeeeee'}).plot(fmt="{hatch}")
+# st.pyplot(limestone_strip)
 
 sns.set(style='ticks')
 
@@ -122,8 +127,8 @@ if file:
   top_depth = st.sidebar.number_input('Top Depth', min_value=0.00, value=(start_depth), step=100.00)
   bot_depth = st.sidebar.number_input('Bottom Depth', min_value=0.00, value=(stop_depth), step=100.00)
 
-  plot_w = 12
   plot_h = 17
+  plot_w = 12
 
   title_size = 12
   title_height = 1.0
@@ -353,7 +358,7 @@ if formevalmode:
     well_df['VSH'] = vsh_log
 
   shale_shading = st.sidebar.radio('Shale Shading',['green','gray'])
-  sand_shading = st.sidebar.radio('Sand/Carbonate Shading',['gold','cornflowerblue'])
+  sand_shading = st.sidebar.radio('Sand/Carbonate Shading',['Sandstone','Carbonate'])
 
   vsh_trackname = f'Vshale {mode} (%)\n'
 
@@ -440,6 +445,7 @@ if formevalmode:
   sw_log = (rw/(res_log*por_input**m_value))**(a_value/n_value)*100
   sw_log = np.clip(sw_log, 0, 100)
   sw_color = 'black'
+  
   hc_shading = st.sidebar.radio('Hydrocarbon Shading',['lime','coral'])
   well_df['SW'] = sw_log
 
@@ -501,11 +507,11 @@ if formevalmode:
   ax1.xaxis.set_label_position("top")
 
   ##area-fill sand and shale for VSH
-  ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=False, color = shale_shading, linewidth=0, alpha=0.8, hatch = '- - -')
-  if sand_shading is 'cornflowerblue':
-    ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = sand_shading, linewidth=0, alpha=0.8, hatch = 'H-')
+  ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=False, color = shale_shading, linewidth=0, alpha=0.5, hatch = '=-')
+  if sand_shading is 'Carbonate':
+    ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = 'cornflowerblue', linewidth=0, alpha=0.5, hatch = 'b')
   else:
-    ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = sand_shading, linewidth=0, alpha=0.9, hatch = '.__._')
+    ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = 'gold', linewidth=0, alpha=0.5, hatch = 'o')
   
 
 
@@ -527,7 +533,7 @@ if formevalmode:
   ax2.xaxis.set_label_position("top")
 
   ##area-fill tpor and epor
-  ax2.fill_betweenx(well_df['DEPTH'], por_log, 0, interpolate=True, color = por_shading, linewidth=0, alpha=0.8)
+  ax2.fill_betweenx(well_df['DEPTH'], por_log, 0, interpolate=True, color = por_shading, linewidth=0, alpha=0.5)
   # ax2.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=True, color = sand_shading, linewidth=0)
   
   #coal track
@@ -564,8 +570,8 @@ if formevalmode:
   ax3.xaxis.set_label_position("top")
 
   ##area-fill sw
-  ax3.fill_betweenx(well_df['DEPTH'], 100, sw_log, interpolate=True, color = hc_shading, linewidth=0, alpha=0.8)
-  ax3.fill_betweenx(well_df['DEPTH'], sw_log, 0, interpolate=True, color = 'lightblue', linewidth=0, alpha=0.8)
+  ax3.fill_betweenx(well_df['DEPTH'], 100, sw_log, interpolate=True, color = hc_shading, linewidth=0, alpha=0.5)
+  ax3.fill_betweenx(well_df['DEPTH'], sw_log, 0, interpolate=True, color = 'lightblue', linewidth=0, alpha=0.5)
 
   if pay_flag:
     ax5.plot(pay_index, "DEPTH", data = well_df, color = 'red', lw=2)
