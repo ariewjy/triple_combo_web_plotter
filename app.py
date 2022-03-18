@@ -60,14 +60,21 @@ if mode == 'Use Preloaded File':
 if file:  
   las_df.insert(0, 'DEPTH', las_df.index)
   las_df.reset_index(drop=True, inplace=True)   
-
-  well_name =  las_file.header['Well'].WELL.value
-  start_depth = las_df['DEPTH'].min()
-  stop_depth = las_df['DEPTH'].max()
-  company_name =  las_file.header['Well'].COMP.value
-  date =  las_file.header['Well'].DATE.value
-  curvename = las_file.curves
   
+  try:
+    well_name =  las_file.header['Well'].WELL.value
+    start_depth = las_df['DEPTH'].min()
+    stop_depth = las_df['DEPTH'].max()
+    company_name =  las_file.header['Well'].COMP.value
+    date =  las_file.header['Well'].DATE.value
+    curvename = las_file.curves
+  except:
+    well_name =  'unknown'
+    start_depth = 0.00
+    stop_depth = 10000.00
+    company_name =  'unknown'
+    date =  'unknown'
+    curvename = las_file.curves
 
   st.subheader('Well Information')
   st.text(f'================================================\nWell Name : {well_name}')
