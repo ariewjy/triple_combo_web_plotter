@@ -17,6 +17,7 @@ The website is available at __www.plotpetrophysics.xyz__ or __https://plotpetrop
 - Ability to plot data in a form of Histogram and Scatter Plot.
 - Ability to download all plots/histogram/scatterplot in a pdf format. 
 - Ability to export the final data (Original LAS data + Formation Evaluation data: VSH, POROSITY, SW)
+- Displaying missing data(value) in LAS file as a matrix display
 
 ## Some Limitations:
 - Only accepting LAS file 2.0.
