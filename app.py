@@ -15,6 +15,7 @@ import tempfile
 import streamlit.components.v1 as components
 import striplog
 from striplog import Legend, Lexicon, Interval, Component, Decor
+import missingno as ms
 
 litho='b'
 limestone_strip = Decor({'component': Component({'hatch':litho}), 'hatch': litho, 'colour': '#eeeeee'}).plot(fmt="{hatch}")
@@ -55,16 +56,17 @@ if mode == 'Use Preloaded File':
     file = '42303347740000.las'
     las_file = lasio.read(file)
     las_df=las_file.df()    
-  
+
 
 if file:  
   las_df.insert(0, 'DEPTH', las_df.index)
   las_df.reset_index(drop=True, inplace=True)   
-  
+
   try:
     well_name =  las_file.header['Well'].WELL.value
     start_depth = las_df['DEPTH'].min()
     stop_depth = las_df['DEPTH'].max()
+    step = abs(las_file.header['Well'].STEP.value)
     company_name =  las_file.header['Well'].COMP.value
     date =  las_file.header['Well'].DATE.value
     curvename = las_file.curves
@@ -72,6 +74,7 @@ if file:
     well_name =  'unknown'
     start_depth = 0.00
     stop_depth = 10000.00
+    step = abs(las_df['DEPTH'][1]-las_df['DEPTH'][0])
     company_name =  'unknown'
     date =  'unknown'
     curvename = las_file.curves
@@ -80,20 +83,21 @@ if file:
   st.text(f'================================================\nWell Name : {well_name}')
   st.text(f'Start Depth : {start_depth}')
   st.text(f'Stop Depth : {stop_depth}')
+  st.text(f'Step : {step}')
   st.text(f'Company : {company_name}')
   st.text(f'Logging Date : {date}')
   
   st.subheader('Curve Information')
   st.text(f'================================================\n{curvename}')
 
-  st.subheader('Curve Data')
-  st.markdown('LAS file curve data is displayed as a table below, similar to excel sheet.\nMove left-right and up-down, or expand to see more')
-  st.write(las_df)
+  st.subheader('Curve Data Overview')
+  st.markdown(f'The value on the left figure is number of rows. White space in each column of curve is a missing value rows/data. Expand to see more details')
+  st.pyplot(ms.matrix(las_df, sparkline=False, labels=100).figure)
 
-  
- 
-#   for item in las_file.well:
-#     st.text(f"{item.descr} ({item.mnemonic}): {item.value}")
+  # st.write(las_df.head(20))
+
+  # for item in las_file.well:
+  #   st.text(f"{item.descr} ({item.mnemonic} {item.unit}): {item.value}")
 
   st.title('Selecting Curves')
   curves = las_df.columns.values
@@ -118,10 +122,10 @@ if file:
   else:
     neu_col = 0
     
-  gr_curve = st.selectbox('select the gamma ray curve', curves, index=gr_col)
-  res_curve = st.selectbox('select the resistivity curve', curves, index=res_col)
-  den_curve = st.selectbox('select the density curve', curves, index=den_col)
-  neu_curve = st.selectbox('select the neutron curve', curves, index=neu_col)
+  gr_curve = st.selectbox('select the GAMMA RAY curve', curves, index=gr_col)
+  res_curve = st.selectbox('select the RESISTIVITY curve', curves, index=res_col)
+  den_curve = st.selectbox('select the BULK DENSITY curve', curves, index=den_col)
+  neu_curve = st.selectbox('select the NEUTRON POROSITY curve', curves, index=neu_col)
   
   curve_list = [gr_curve, res_curve, den_curve, neu_curve]
   
