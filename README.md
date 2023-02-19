@@ -2,7 +2,7 @@
 
 ## This is a documentation of online website to plot LAS file data into a triple combo plot and formation evaluation plot.
 
-The website is available at __www.plotpetrophysics.xyz__ or __https://plotpetrophysics.xyz/__ (for SSL certificated website)
+The website is available at [plotpetrophysics](https://plotpetrophysics.streamlit.app/)
 
 ## Features:
 - Adjustable depth, color, and curve-shading.
@@ -20,9 +20,7 @@ The website is available at __www.plotpetrophysics.xyz__ or __https://plotpetrop
 - Displaying missing data(value) in LAS file as a matrix display
 
 ## Some Limitations:
-- Only accepting LAS file 2.0.
-- Limited bandwith, make sure to select and adjust one feature at a time.
-- Make sure to access the website via __https://plotpetrophysics.xyz/__ to access the secured website with SSL certificate. Otherwise, you can still access it via __plotpetrophysics.xyz__ or __www.plotpetrophysics.xyz__ but with no ssl certificate. I am working on making all reroute to https server. Thanks for understanding!
+- Only accepting LAS file 2.0
 
 ## Exciting Future Plans:
 - Adding ability to adjust the plot size, in order to facilitate longer vertical log-type pdf file.
