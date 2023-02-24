@@ -3,6 +3,7 @@
 ## This is a documentation of online website to plot LAS file data into a triple combo plot and formation evaluation plot.
 
 The website is available at [plotpetrophysics](https://plotpetrophysics.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://plotpetrophysics.streamlit.app/)
 
 ## Features:
 - Adjustable depth, color, and curve-shading.
