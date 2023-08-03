@@ -513,7 +513,7 @@ if file:
 
     ##area-fill sand and shale for VSH
     ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=False, color = shale_shading, linewidth=0, alpha=0.5, hatch = '=-')
-    if sand_shading is 'Carbonate':
+    if sand_shading == 'Carbonate':
       ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = 'cornflowerblue', linewidth=0, alpha=0.5, hatch = 'b')
     else:
       ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = 'gold', linewidth=0, alpha=0.5, hatch = 'o')
