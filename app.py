@@ -25,7 +25,7 @@ sns.set(style='ticks')
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
 
-st.title('Welcome to Petrophysics Plotter!')
+st.title('Welcome to Plot Petrophysics!')
 st.text('Plot your LAS 2.0 file into a triple combo and/or formation evaluation plots.\n(c) 2021, Aditya Arie Wijaya\n=============================')
 st.write('Find the source code in [**my Github repo**] (https://github.com/ariewjy/triple_combo_web_plotter) and reach me out in [**LinkedIn**] (www.linkedin.com/in/adityaariewijaya89)')
 st.markdown('Support this web application by [donating as low as 1 USD] (https://ko-fi.com/plotpetrophysics)')
