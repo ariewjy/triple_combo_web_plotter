@@ -82,12 +82,12 @@ if file:
   st.text(f'Company : {company_name}')
   st.text(f'Logging Date : {date}')
   
-  st.subheader('Curve Information')
-  st.text(f'================================================\n{curvename}')
+  # st.subheader('Curve Information')
+  # st.text(f'================================================\n{curvename}')
 
-  st.subheader('Curve Data Overview')
-  st.markdown(f'The value on the left figure is number of rows. White space in each column of curve is a missing value rows/data. Expand to see more details')
-  st.pyplot(ms.matrix(las_df, sparkline=False, labels=100).figure)
+  # st.subheader('Curve Data Overview')
+  # st.markdown(f'The value on the left figure is number of rows. White space in each column of curve is a missing value rows/data. Expand to see more details')
+  # st.pyplot(ms.matrix(las_df, sparkline=False, labels=100).figure)
 
   # for item in las_file.well:
   #   st.text(f"{item.descr} ({item.mnemonic} {item.unit}): {item.value}")
