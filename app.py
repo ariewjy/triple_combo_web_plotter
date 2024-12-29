@@ -2,7 +2,8 @@
 from cmath import nan
 import lasio
 import pathlib 
-from numpy.core.fromnumeric import mean
+# from numpy.core.fromnumeric import mean
+from statistics import mean
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -23,7 +24,7 @@ limestone_strip = Decor({'component': Component({'hatch':litho}), 'hatch': litho
 
 sns.set(style='ticks')
 
-st.set_option('deprecation.showfileUploaderEncoding', False)
+# st.set_option('deprecation.showfileUploaderEncoding', False)
 
 st.title('Welcome to Plot Petrophysics!')
 st.text('Plot your LAS 2.0 file into a triple combo and/or formation evaluation plots.\n(c) 2021, Aditya Arie Wijaya\n=============================')
