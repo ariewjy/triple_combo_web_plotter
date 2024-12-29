@@ -513,7 +513,7 @@ if file:
     ax1.xaxis.set_label_position("top")
 
     ##area-fill sand and shale for VSH
-    ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=False, color = shale_shading, linewidth=0, alpha=0.5, hatch = '=-')
+    ax1.fill_betweenx(well_df['DEPTH'], 0, vsh_log, interpolate=False, color = shale_shading, linewidth=0, alpha=0.5, hatch = '-')
     if sand_shading == 'Carbonate':
       ax1.fill_betweenx(well_df['DEPTH'], vsh_log, 100, interpolate=False, color = 'cornflowerblue', linewidth=0, alpha=0.5, hatch = 'b')
     else:
@@ -620,7 +620,7 @@ if file:
     st.markdown('**REMARKS**: _The CSV file will include input LAS data_ **AND** _Formation Evaluation Result: Volume of Shale (%), Porosity (dec), and Water Saturation (%) at the above depth interval_')
 
     #exporting as CSV
-    @st.cache
+    @st.cache_data
     def convert_df(df):
       return df.to_csv().encode('utf-8')
 
